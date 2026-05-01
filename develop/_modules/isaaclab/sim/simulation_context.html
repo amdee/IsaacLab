@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="simulation_context.html" selected>develop</option>
             <option value="../../../../main/index.html" >main</option>
+            <option value="../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -683,6 +685,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">isaaclab.sim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sim_utils</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">isaaclab.sim.utils.stage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">stage_utils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.app.settings_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">SettingsManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.envs.utils.recording_hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">run_recording_hooks_after_visualizers</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseSceneDataProvider</span><span class="p">,</span> <span class="n">PhysicsManager</span><span class="p">,</span> <span class="n">SceneDataProvider</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.physics.scene_data_requirements</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">SceneDataRequirement</span><span class="p">,</span>
@@ -690,6 +693,7 @@
     <span class="n">resolve_scene_data_requirements</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.sim.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_new_stage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.utils.string</span><span class="w"> </span><span class="kn">import</span> <span class="n">clear_resolve_matching_names_cache</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.utils.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">has_kit</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.visualizers.base_visualizer</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseVisualizer</span>
 
@@ -853,6 +857,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_has_offscreen_render</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;/isaaclab/render/offscreen&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xr_enabled</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;/isaaclab/xr/enabled&quot;</span><span class="p">))</span>
         <span class="c1"># Note: has_rtx_sensors is NOT cached because it changes when Camera sensors are created</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pending_camera_view</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Simulation state</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_playing</span> <span class="o">=</span> <span class="kc">False</span>
@@ -860,6 +865,10 @@
 
         <span class="c1"># Monotonic physics-step counter used by camera sensors for</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_physics_step_count</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Monotonic render-generation counter. This increments whenever render()</span>
+        <span class="c1"># is executed and lets downstream camera freshness logic distinguish</span>
+        <span class="c1"># render/reset transitions that occur without advancing physics steps.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_generation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="bp">self</span>  <span class="c1"># Mark as valid singleton only after successful init</span></div>
 
@@ -962,10 +971,14 @@
             <span class="n">UsdGeom</span><span class="o">.</span><span class="n">SetStageMetersPerUnit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
             <span class="n">UsdPhysics</span><span class="o">.</span><span class="n">SetStageKilogramsPerUnit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
-            <span class="c1"># Find and delete any existing physics scene</span>
-            <span class="k">for</span> <span class="n">prim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">Traverse</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">prim</span><span class="o">.</span><span class="n">GetTypeName</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;PhysicsScene&quot;</span><span class="p">:</span>
-                    <span class="n">sim_utils</span><span class="o">.</span><span class="n">delete_prim</span><span class="p">(</span><span class="n">prim</span><span class="o">.</span><span class="n">GetPath</span><span class="p">()</span><span class="o">.</span><span class="n">pathString</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">)</span>
+            <span class="c1"># Find and delete any existing physics scene.</span>
+            <span class="c1"># Collect paths first to avoid mutating the stage while traversing,</span>
+            <span class="c1"># which can invalidate the USD iterator.</span>
+            <span class="n">physics_scene_paths</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">prim</span><span class="o">.</span><span class="n">GetPath</span><span class="p">()</span><span class="o">.</span><span class="n">pathString</span> <span class="k">for</span> <span class="n">prim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">Traverse</span><span class="p">()</span> <span class="k">if</span> <span class="n">prim</span><span class="o">.</span><span class="n">GetTypeName</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;PhysicsScene&quot;</span>
+            <span class="p">]</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">physics_scene_paths</span><span class="p">:</span>
+                <span class="n">sim_utils</span><span class="o">.</span><span class="n">delete_prim</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">stage</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="p">)</span>
 
             <span class="c1"># Create a new physics scene</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage</span><span class="o">.</span><span class="n">GetPrimAtPath</span><span class="p">(</span><span class="n">cfg</span><span class="o">.</span><span class="n">physics_prim_path</span><span class="p">)</span><span class="o">.</span><span class="n">IsValid</span><span class="p">():</span>
@@ -1010,6 +1023,22 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether offscreen rendering is enabled (cached at init).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_offscreen_render</span>
 
+<div class="viewcode-block" id="SimulationContext.has_active_visualizers">
+<a class="viewcode-back" href="../../../source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.has_active_visualizers">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_active_visualizers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether any visualizer path is active for rendering/camera control.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/types&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;/isaaclab/video/auto_start_kit&quot;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SimulationContext.can_render_rgb_array">
+<a class="viewcode-back" href="../../../source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.can_render_rgb_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">can_render_rgb_array</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether rgb-array rendering is currently available.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_gui</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_offscreen_render</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_active_visualizers</span><span class="p">()</span></div>
+
+
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_rendering</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether rendering is active (GUI, RTX sensors, visualizers, or XR).&quot;&quot;&quot;</span>
@@ -1027,6 +1056,11 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the physics time step.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">physics_manager</span><span class="o">.</span><span class="n">get_physics_dt</span><span class="p">()</span></div>
 
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a monotonic counter for render() executions.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_render_generation</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_create_default_visualizer_configs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">requested_visualizers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Create default visualizer configs for requested types.</span>
@@ -1081,39 +1115,23 @@
         <span class="c1"># App launcher writes this as a single string; accept comma and/or whitespace separators.</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">value</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">requested</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">chunk</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="n">value</span><span class="p">]</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_cli_visualizer_max_worlds_override</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return CLI override for visualizer max worlds.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            Tuple of (has_override, value), where value=None means no override.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/max_worlds&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">max_worlds</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;[SimulationContext] Invalid /isaaclab/visualizer/max_worlds setting: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
-
-        <span class="c1"># -1 means no CLI override.</span>
-        <span class="k">if</span> <span class="n">max_worlds</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">max_worlds</span>
-
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_visualizer_cli_overrides</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">visualizer_cfgs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply CLI visualizer overrides (e.g., max worlds) to resolved configs.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Apply ``--max_visible_envs`` to every resolved visualizer cfg when set in settings.</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            visualizer_cfgs: Resolved visualizer configs to update in-place.</span>
+<span class="sd">        AppLauncher stores ``/isaaclab/visualizer/max_visible_envs`` as ``-1`` when the flag was</span>
+<span class="sd">        omitted; any non-negative int overrides :attr:`VisualizerCfg.max_visible_envs` on each cfg.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">has_max_worlds_override</span><span class="p">,</span> <span class="n">max_worlds_override</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cli_visualizer_max_worlds_override</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_max_worlds_override</span><span class="p">:</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/max_visible_envs&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">max_visible</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">raw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;[SimulationContext] Invalid /isaaclab/visualizer/max_visible_envs: </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">raw</span><span class="p">)</span>
             <span class="k">return</span>
-
+        <span class="k">if</span> <span class="n">max_visible</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="k">for</span> <span class="n">cfg</span> <span class="ow">in</span> <span class="n">visualizer_cfgs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;max_worlds&quot;</span><span class="p">):</span>
-                <span class="n">cfg</span><span class="o">.</span><span class="n">max_worlds</span> <span class="o">=</span> <span class="n">max_worlds_override</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;max_visible_envs&quot;</span><span class="p">):</span>
+                <span class="n">cfg</span><span class="o">.</span><span class="n">max_visible_envs</span> <span class="o">=</span> <span class="n">max_visible</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_is_cli_visualizer_explicit</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` when visualizers were explicitly provided via CLI.&quot;&quot;&quot;</span>
@@ -1258,6 +1276,14 @@
                     <span class="n">exc</span><span class="p">,</span>
                 <span class="p">)</span>
 
+        <span class="c1"># Replay any camera pose requested before visualizers were initialized.</span>
+        <span class="n">pending</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_pending_camera_view&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pending</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">eye</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">pending</span>
+            <span class="k">for</span> <span class="n">viz</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visualizers</span><span class="p">:</span>
+                <span class="n">viz</span><span class="o">.</span><span class="n">set_camera_view</span><span class="p">(</span><span class="n">eye</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pending_camera_view</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visualizers</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scene_data_provider</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">close_provider</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scene_data_provider</span><span class="p">,</span> <span class="s2">&quot;close&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">close_provider</span><span class="p">):</span>
@@ -1329,6 +1355,7 @@
 <a class="viewcode-back" href="../../../source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.set_camera_view">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_camera_view</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eye</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set camera view on all visualizers that support it.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pending_camera_view</span> <span class="o">=</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">eye</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">viz</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visualizers</span><span class="p">:</span>
             <span class="n">viz</span><span class="o">.</span><span class="n">set_camera_view</span><span class="p">(</span><span class="n">eye</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span></div>
 
@@ -1382,15 +1409,35 @@
 
 <div class="viewcode-block" id="SimulationContext.render">
 <a class="viewcode-back" href="../../../source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.render">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">skip_app_pumping</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Update visualizers and render the scene.</span>
 
 <span class="sd">        Calls update_visualizers() so visualizers run at the render cadence (not at</span>
 <span class="sd">        every physics step). Camera sensors drive their configured renderer when</span>
-<span class="sd">        fetching data, so this method remains backend-agnostic.</span>
+<span class="sd">        fetching data. Recording-related follow-up (Kit/RTX headless video, Newton GL</span>
+<span class="sd">        video, etc.) runs in :mod:`isaaclab.envs.utils.recording_hooks` so it is not tied to a</span>
+<span class="sd">        specific :class:`~isaaclab.physics.PhysicsManager` subclass.</span>
+
+<span class="sd">        **Kit vs. standalone visualizers:**  The Kit app loop (``app.update()``) is the</span>
+<span class="sd">        only way to drive camera/RTX sensor rendering and viewport GUI updates; it</span>
+<span class="sd">        cannot be split into &quot;cameras only&quot; and &quot;GUI only&quot;.  Standalone visualizers</span>
+<span class="sd">        (Newton, Rerun, Viser) have self-contained ``step()`` methods that never call</span>
+<span class="sd">        ``app.update()``, so they can run independently of camera rendering.  The</span>
+<span class="sd">        ``skip_app_pumping`` flag exploits this distinction: when True, Kit is skipped</span>
+<span class="sd">        while standalone visualizers continue to update.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            mode: Unused. Kept for backward compatibility.</span>
+<span class="sd">            skip_app_pumping: When True, skip visualizers whose :meth:`~BaseVisualizer.pumps_app_update`</span>
+<span class="sd">                returns True (e.g. KitVisualizer).  This disables the Kit app loop and camera</span>
+<span class="sd">                updates while still stepping standalone visualizers (Newton, Rerun, Viser).</span>
+<span class="sd">                Used by environment ``step()`` when ``render_enabled`` is False.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">physics_manager</span><span class="o">.</span><span class="n">pre_render</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_visualizers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_rendering_dt</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_visualizers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_rendering_dt</span><span class="p">(),</span> <span class="n">skip_app_pumping</span><span class="o">=</span><span class="n">skip_app_pumping</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">physics_manager</span><span class="o">.</span><span class="n">after_visualizers_render</span><span class="p">()</span>
+        <span class="n">run_recording_hooks_after_visualizers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_render_generation</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c1"># Call render callbacks</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_render_callbacks&quot;</span><span class="p">):</span>
@@ -1400,8 +1447,16 @@
 
 <div class="viewcode-block" id="SimulationContext.update_visualizers">
 <a class="viewcode-back" href="../../../source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.update_visualizers">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">update_visualizers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update visualizers without triggering renderer/GUI.&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_visualizers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">skip_app_pumping</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update visualizers without triggering renderer/GUI.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dt: Simulation time-step in seconds.</span>
+<span class="sd">            skip_app_pumping: When True, skip visualizers whose :meth:`~BaseVisualizer.pumps_app_update`</span>
+<span class="sd">                returns True (e.g. KitVisualizer). This is used when the environment&#39;s ``render_enabled``</span>
+<span class="sd">                flag is False — cameras and the Kit app loop are skipped, but standalone visualizers</span>
+<span class="sd">                (Newton, Rerun, Viser) still receive updates.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visualizers</span><span class="p">:</span>
             <span class="k">return</span>
 
@@ -1410,6 +1465,9 @@
         <span class="n">visualizers_to_remove</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">viz</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visualizers</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># When skip_app_pumping is set, skip Kit-like visualizers that call app.update()</span>
+                <span class="k">if</span> <span class="n">skip_app_pumping</span> <span class="ow">and</span> <span class="n">viz</span><span class="o">.</span><span class="n">pumps_app_update</span><span class="p">():</span>
+                    <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">viz</span><span class="o">.</span><span class="n">is_closed</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">viz</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
                     <span class="k">if</span> <span class="n">viz</span><span class="o">.</span><span class="n">is_closed</span><span class="p">:</span>
                         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Visualizer closed: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">viz</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
@@ -1418,6 +1476,11 @@
                     <span class="n">visualizers_to_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">viz</span><span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="n">viz</span><span class="o">.</span><span class="n">is_rendering_paused</span><span class="p">():</span>
+                    <span class="c1"># Keep non-Kit visualizer event loops responsive while rendering is paused.</span>
+                    <span class="c1"># Newton/Rerun/Viser need step(0.0) so GL/UI can process input (e.g. Resume).</span>
+                    <span class="c1"># Kit is skipped: step() would call app.update(), which must not run during pause.</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">viz</span><span class="o">.</span><span class="n">pumps_app_update</span><span class="p">():</span>
+                        <span class="n">viz</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
                     <span class="k">continue</span>
                 <span class="k">while</span> <span class="n">viz</span><span class="o">.</span><span class="n">is_training_paused</span><span class="p">()</span> <span class="ow">and</span> <span class="n">viz</span><span class="o">.</span><span class="n">is_running</span><span class="p">():</span>
                     <span class="n">viz</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
@@ -1441,14 +1504,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_visualizer_step_counter</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scene_data_provider</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="n">provider</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scene_data_provider</span>
-        <span class="n">env_ids_union</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">viz</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_visualizers</span><span class="p">:</span>
-            <span class="n">ids</span> <span class="o">=</span> <span class="n">viz</span><span class="o">.</span><span class="n">get_visualized_env_ids</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">env_ids_union</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
-        <span class="n">env_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">env_ids_union</span><span class="p">))</span> <span class="k">if</span> <span class="n">env_ids_union</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">provider</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scene_data_provider</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_should_forward_before_visualizer_update</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if any visualizer requires pre-step forward kinematics.&quot;&quot;&quot;</span>
@@ -1537,6 +1593,9 @@
             <span class="c1"># Tear down the stage. We skip clear_stage() (prim-by-prim deletion) since</span>
             <span class="c1"># close_stage() + app shutdown destroy the entire stage at once.</span>
             <span class="n">stage_utils</span><span class="o">.</span><span class="n">close_stage</span><span class="p">()</span>
+
+            <span class="c1"># Discard cached name-resolution data from destroyed assets</span>
+            <span class="n">clear_resolve_matching_names_cache</span><span class="p">()</span>
 
             <span class="c1"># Clear instance</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1682,7 +1741,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

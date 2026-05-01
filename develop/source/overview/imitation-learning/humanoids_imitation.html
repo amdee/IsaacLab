@@ -59,11 +59,11 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Augmented Imitation Learning" href="augmented_imitation.html" />
-    <link rel="prev" title="Teleoperation and Imitation Learning with Isaac Lab Mimic" href="teleop_imitation.html" />
+    <link rel="prev" title="Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic" href="teleop_imitation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -160,6 +160,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="humanoids_imitation.html" selected>develop</option>
             <option value="../../../../main/index.html" >main</option>
+            <option value="../../../../v3.0.0-beta/source/overview/imitation-learning/humanoids_imitation.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -303,6 +304,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -361,7 +363,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Imitation Learning</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2 current active"><a class="current reference internal" href="#">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -780,7 +782,7 @@
 </ul>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
-<p>Complete the tutorial in <a class="reference internal" href="teleop_imitation.html#teleoperation-imitation-learning"><span class="std std-ref">Teleoperation and Imitation Learning with Isaac Lab Mimic</span></a>
+<p>Complete the tutorial in <a class="reference internal" href="teleop_imitation.html#teleoperation-imitation-learning"><span class="std std-ref">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</span></a>
 before proceeding with the following demonstrations to
 understand the data collection, annotation, and generation steps of Isaac Lab Mimic.</p>
 </div>
@@ -858,7 +860,7 @@ on the Apple Vision Pro or via voice control by saying “reset”. See <a class
 </section>
 <section id="annotate-the-demonstrations">
 <h4>Annotate the demonstrations<a class="headerlink" href="#annotate-the-demonstrations" title="Link to this heading">#</a></h4>
-<p>Unlike the <a class="reference internal" href="teleop_imitation.html#generating-additional-demonstrations"><span class="std std-ref">Franka stacking task</span></a>, the GR-1 pick and place task uses manual annotation to define subtasks.</p>
+<p>Unlike the <a class="reference internal" href="teleop_imitation.html#generate-additional-demonstrations"><span class="std std-ref">Franka stacking task</span></a>, the GR-1 pick and place task uses manual annotation to define subtasks.</p>
 <p>The pick and place task has one subtask for the left arm (pick) and two subtasks for the right arm (idle, place).
 Annotations denote the end of a subtask. For the pick and place task, this means there are no annotations for the left arm and one annotation for the right arm (the end of the final subtask is always implicit).</p>
 <p>Each demo requires a single annotation between the first and second subtask of the right arm. This annotation (“S” button press) should be done when the right robot arm finishes the “idle” subtask and begins to
@@ -1256,7 +1258,7 @@ Different epochs can produce significantly different results, so evaluate multip
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./isaaclab.sh<span class="w"> </span>-p<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>scripts/imitation_learning/locomanipulation_sdg/generate_data.py<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--device<span class="w"> </span>cpu<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--kit_args<span class="o">=</span><span class="s2">&quot;--enable isaacsim.replicator.mobility_gen&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--kit_args<span class="o">=</span><span class="s2">&quot;--enable isaacsim.replicator.experimental.mobility_gen&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--task<span class="o">=</span><span class="s2">&quot;Isaac-G1-SteeringWheel-Locomanipulation&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--dataset<span class="w"> </span>./datasets/generated_dataset_g1_locomanip.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--num_runs<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
@@ -1401,7 +1403,7 @@ dataset. Some of them are captured from a humanoid-viewpoint to match the camera
 <p>Download the files and place them under <code class="docutils literal notranslate"><span class="pre">&lt;PATH_TO_USD_ASSET&gt;</span></code>, then run the following command to generate a new dataset with background:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./isaaclab.sh<span class="w"> </span>-p<span class="w"> </span>scripts/imitation_learning/locomanipulation_sdg/generate_data.py<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--device<span class="w"> </span>cpu<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>--kit_args<span class="o">=</span><span class="s2">&quot;--enable isaacsim.replicator.mobility_gen&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>--kit_args<span class="o">=</span><span class="s2">&quot;--enable isaacsim.replicator.experimental.mobility_gen&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--task<span class="o">=</span><span class="s2">&quot;Isaac-G1-SteeringWheel-Locomanipulation&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--dataset<span class="w"> </span>&lt;DATASET_FOLDER&gt;/dataset_annotated_g1_locomanip.hdf5<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--num_runs<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
@@ -1460,7 +1462,7 @@ sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> <
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Teleoperation and Imitation Learning with Isaac Lab Mimic</p>
+        <p class="prev-next-title">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</p>
       </div>
     </a>
     <a class="right-next"
@@ -1559,7 +1561,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

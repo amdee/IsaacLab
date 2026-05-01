@@ -65,7 +65,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -162,6 +162,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="isaaclab.sim.spawners.html" selected>develop</option>
             <option value="../../../../main/source/api/lab/isaaclab.sim.spawners.html" >main</option>
+            <option value="../../../../v3.0.0-beta/source/api/lab/isaaclab.sim.spawners.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/source/api/lab/isaaclab.sim.spawners.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/source/api/lab/isaaclab.sim.spawners.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/source/api/lab/isaaclab.sim.spawners.html" >v2.3.0</option>
@@ -305,6 +306,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -363,7 +365,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -1092,6 +1094,7 @@
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.projection_type"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.projection_type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_nominal_width</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.visible"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.visible</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.semantic_tags"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.semantic_tags</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.copy_from_source"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.copy_from_source</span></code></a></li>
@@ -1105,7 +1108,6 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture_offset"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.horizontal_aperture_offset</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture_offset"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.vertical_aperture_offset</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.lock_camera"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.lock_camera</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_nominal_width</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_height"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_nominal_height</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_optical_centre_x"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_optical_centre_x</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_optical_centre_y"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_optical_centre_y</span></code></a></li>
@@ -5380,47 +5382,47 @@ function.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.projection_type" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.projection_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">projection_type</span></code></a></p></td>
 <td><p>Type of projection to use for the camera.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.visible" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visible</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fisheye_nominal_width</span></code></a></p></td>
+<td><p>Nominal width of fisheye lens model (in pixels).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.visible" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.visible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">visible</span></code></a></p></td>
 <td><p>Whether the spawned asset should be visible.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.semantic_tags" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.semantic_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semantic_tags</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.semantic_tags" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.semantic_tags"><code class="xref py py-obj docutils literal notranslate"><span class="pre">semantic_tags</span></code></a></p></td>
 <td><p>List of semantic tags to add to the spawned asset.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.copy_from_source" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.copy_from_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_from_source</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.copy_from_source" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.copy_from_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy_from_source</span></code></a></p></td>
 <td><p>Whether to copy the asset from the source prim or inherit it.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.spawn_path" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.spawn_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spawn_path</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.spawn_path" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.spawn_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spawn_path</span></code></a></p></td>
 <td><p>Path where the prototype is spawned.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.clipping_range" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.clipping_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clipping_range</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.clipping_range" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.clipping_range"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clipping_range</span></code></a></p></td>
 <td><p>Near and far clipping distances (in m).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focal_length" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focal_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">focal_length</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focal_length" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focal_length"><code class="xref py py-obj docutils literal notranslate"><span class="pre">focal_length</span></code></a></p></td>
 <td><p>Perspective focal length (in cm).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focus_distance" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focus_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">focus_distance</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focus_distance" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.focus_distance"><code class="xref py py-obj docutils literal notranslate"><span class="pre">focus_distance</span></code></a></p></td>
 <td><p>Distance from the camera to the focus plane (in m).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.f_stop" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.f_stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">f_stop</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.f_stop" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.f_stop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">f_stop</span></code></a></p></td>
 <td><p>Lens aperture.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">horizontal_aperture</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">horizontal_aperture</span></code></a></p></td>
 <td><p>Horizontal aperture (in cm).</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertical_aperture</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertical_aperture</span></code></a></p></td>
 <td><p>Vertical aperture (in mm).</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture_offset" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">horizontal_aperture_offset</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture_offset" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">horizontal_aperture_offset</span></code></a></p></td>
 <td><p>Offsets Resolution/Film gate horizontally.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture_offset" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertical_aperture_offset</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture_offset" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture_offset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">vertical_aperture_offset</span></code></a></p></td>
 <td><p>Offsets Resolution/Film gate vertically.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.lock_camera" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.lock_camera"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lock_camera</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.lock_camera" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.lock_camera"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lock_camera</span></code></a></p></td>
 <td><p>Locks the camera in the Omniverse viewport.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fisheye_nominal_width</span></code></a></p></td>
-<td><p>Nominal width of fisheye lens model (in pixels).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_height" title="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_height"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fisheye_nominal_height</span></code></a></p></td>
 <td><p>Nominal height of fisheye lens model (in pixels).</p></td>
@@ -5467,6 +5469,12 @@ function.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;fisheyeRadTanThinPrism&quot;</span></code>: Fisheye camera model that combines radial and tangential distortions.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&quot;omniDirectionalStereo&quot;</span></code>: Fisheye camera model supporting <span class="math notranslate nohighlight">\(360^{\circ}\)</span> stereoscopic imaging.</p></li>
 </ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width">
+<span class="sig-name descname"><span class="pre">fisheye_nominal_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width" title="Link to this definition">#</a></dt>
+<dd><p>Nominal width of fisheye lens model (in pixels). Defaults to 1936.0.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -5575,12 +5583,6 @@ horizontal aperture and the aspect ratio of the image to maintain squared pixels
 <dd><p>Locks the camera in the Omniverse viewport. Defaults to True.</p>
 <p>If True, then the camera remains fixed at its configured transform. This is useful when wanting to view
 the camera output on the GUI and not accidentally moving the camera through the GUI interactions.</p>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width">
-<span class="sig-name descname"><span class="pre">fisheye_nominal_width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><a class="headerlink" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width" title="Link to this definition">#</a></dt>
-<dd><p>Nominal width of fisheye lens model (in pixels). Defaults to 1936.0.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -7870,6 +7872,7 @@ If True, a random asset configuration is selected for each spawn.</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.projection_type"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.projection_type</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_nominal_width</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.visible"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.visible</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.semantic_tags"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.semantic_tags</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.copy_from_source"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.copy_from_source</span></code></a></li>
@@ -7883,7 +7886,6 @@ If True, a random asset configuration is selected for each spawn.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.horizontal_aperture_offset"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.horizontal_aperture_offset</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.vertical_aperture_offset"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.vertical_aperture_offset</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.lock_camera"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.lock_camera</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_width"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_nominal_width</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_nominal_height"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_nominal_height</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_optical_centre_x"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_optical_centre_x</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab.sim.spawners.sensors.FisheyeCameraCfg.fisheye_optical_centre_y"><code class="docutils literal notranslate"><span class="pre">FisheyeCameraCfg.fisheye_optical_centre_y</span></code></a></li>
@@ -8098,7 +8100,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

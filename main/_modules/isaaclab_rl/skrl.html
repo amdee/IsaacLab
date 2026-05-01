@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.3.2" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="../../../develop/index.html" >develop</option>
             <option value="skrl.html" selected>main</option>
+            <option value="../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../v2.3.0/index.html" >v2.3.0</option>
@@ -639,7 +640,7 @@
 <a class="viewcode-back" href="../../source/api/lab_rl/isaaclab_rl.html#isaaclab_rl.skrl.SkrlVecEnvWrapper">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">SkrlVecEnvWrapper</span><span class="p">(</span>
     <span class="n">env</span><span class="p">:</span> <span class="n">ManagerBasedRLEnv</span> <span class="o">|</span> <span class="n">DirectRLEnv</span> <span class="o">|</span> <span class="n">DirectMARLEnv</span><span class="p">,</span>
-    <span class="n">ml_framework</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="s2">&quot;jax-numpy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span><span class="p">,</span>
+    <span class="n">ml_framework</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span> <span class="s2">&quot;jax&quot;</span><span class="p">,</span> <span class="s2">&quot;warp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;torch&quot;</span><span class="p">,</span>
     <span class="n">wrapper</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="s2">&quot;isaaclab&quot;</span><span class="p">,</span> <span class="s2">&quot;isaaclab-single-agent&quot;</span><span class="p">,</span> <span class="s2">&quot;isaaclab-multi-agent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;isaaclab&quot;</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Wraps around Isaac Lab environment for skrl.</span>
@@ -678,9 +679,11 @@
         <span class="kn">from</span><span class="w"> </span><span class="nn">skrl.envs.wrappers.torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">wrap_env</span>
     <span class="k">elif</span> <span class="n">ml_framework</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;jax&quot;</span><span class="p">):</span>
         <span class="kn">from</span><span class="w"> </span><span class="nn">skrl.envs.wrappers.jax</span><span class="w"> </span><span class="kn">import</span> <span class="n">wrap_env</span>
+    <span class="k">elif</span> <span class="n">ml_framework</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;warp&quot;</span><span class="p">):</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">skrl.envs.wrappers.warp</span><span class="w"> </span><span class="kn">import</span> <span class="n">wrap_env</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Invalid ML framework for skrl: </span><span class="si">{</span><span class="n">ml_framework</span><span class="si">}</span><span class="s2">. Available options are: &#39;torch&#39;, &#39;jax&#39; or &#39;jax-numpy&#39;&quot;</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Invalid ML framework for skrl: </span><span class="si">{</span><span class="n">ml_framework</span><span class="si">}</span><span class="s2">. Available options are: &#39;torch&#39;, &#39;jax&#39;, &#39;warp&#39;&quot;</span>
         <span class="p">)</span>
 
     <span class="c1"># wrap and return the environment</span>
@@ -733,7 +736,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="sim_launcher.html" selected>develop</option>
             <option value="../../../../main/index.html" >main</option>
+            <option value="../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -731,9 +733,9 @@
     <span class="k">return</span> <span class="n">results</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_is_newton_physics</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;True when the node is a Newton physics config (Kit is not required).&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PhysicsCfg</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;NewtonCfg&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_kitless_physics</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;True when the node is a kitless physics config (Newton or OvPhysX).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">PhysicsCfg</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;NewtonCfg&quot;</span><span class="p">,</span> <span class="s2">&quot;OvPhysxCfg&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_get_visualizer_types</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">:</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span> <span class="o">|</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -808,8 +810,8 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        (needs_kit, has_kit_cameras, visualizer_types)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">is_newton</span><span class="p">,</span> <span class="n">has_kit_cameras</span> <span class="o">=</span> <span class="n">_scan_config</span><span class="p">(</span><span class="n">env_cfg</span><span class="p">,</span> <span class="p">[</span><span class="n">_is_newton_physics</span><span class="p">,</span> <span class="n">_is_kit_camera</span><span class="p">])</span>
-    <span class="n">needs_kit</span> <span class="o">=</span> <span class="n">has_kit_cameras</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_newton</span>
+    <span class="n">is_kitless</span><span class="p">,</span> <span class="n">has_kit_cameras</span> <span class="o">=</span> <span class="n">_scan_config</span><span class="p">(</span><span class="n">env_cfg</span><span class="p">,</span> <span class="p">[</span><span class="n">_is_kitless_physics</span><span class="p">,</span> <span class="n">_is_kit_camera</span><span class="p">])</span>
+    <span class="n">needs_kit</span> <span class="o">=</span> <span class="n">has_kit_cameras</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_kitless</span>
     <span class="n">visualizer_types</span> <span class="o">=</span> <span class="n">_get_visualizer_types</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;kit&quot;</span> <span class="ow">in</span> <span class="n">visualizer_types</span><span class="p">:</span>
         <span class="n">needs_kit</span> <span class="o">=</span> <span class="kc">True</span>
@@ -860,12 +862,38 @@
         <span class="kn">import</span><span class="w"> </span><span class="nn">importlib.util</span>
 
         <span class="k">if</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;omni.kit&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Print a more obvious hint when a local _isaac_sim symlink</span>
+            <span class="c1"># exists but its env wasn&#39;t sourced (typical on Win11 + conda</span>
+            <span class="c1"># when activate.d hooks didn&#39;t fire, e.g. under `conda run`).</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+            <span class="n">isaaclab_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;ISAACLAB_PATH&quot;</span><span class="p">)</span>
+            <span class="n">local_sim</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">isaaclab_path</span><span class="p">,</span> <span class="s2">&quot;_isaac_sim&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">isaaclab_path</span> <span class="k">else</span> <span class="kc">None</span>
+            <span class="n">extra_hint</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">local_sim</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">local_sim</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s2">&quot;win32&quot;</span><span class="p">:</span>
+                    <span class="n">extra_hint</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;  Found a local Isaac Sim at </span><span class="si">{</span><span class="n">local_sim</span><span class="si">}</span><span class="s2"> but its environment is not active.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;  Either run via `isaaclab.bat ...` (which now sources setup_conda_env.bat</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;  automatically), or in your current shell run:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s1">&#39;    call &quot;</span><span class="si">{</span><span class="n">local_sim</span><span class="si">}</span><span class="se">\\</span><span class="s1">setup_conda_env.bat&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">extra_hint</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;  Found a local Isaac Sim at </span><span class="si">{</span><span class="n">local_sim</span><span class="si">}</span><span class="s2"> but its environment is not active.</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;  Either run via `./isaaclab.sh ...` (which now sources setup_conda_env.sh</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;  automatically), or in your current shell run:</span><span class="se">\n</span><span class="s2">&quot;</span>
+                        <span class="sa">f</span><span class="s1">&#39;    source &quot;</span><span class="si">{</span><span class="n">local_sim</span><span class="si">}</span><span class="s1">/setup_conda_env.sh&quot;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                    <span class="p">)</span>
+
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">[ERROR] Isaac Sim is not installed or not found on PYTHONPATH.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;  This environment requires Isaac Sim and Omniverse Kit.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;    PhysX backend and Kit visualizer currently requires Isaac Sim.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">extra_hint</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;  To fix this, ensure Isaac Sim is installed and available in the current environment.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;  See https://isaac-sim.github.io/IsaacLab/main/source/setup/installation for details.</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -884,15 +912,17 @@
         <span class="c1"># Newton path without Kit: AppLauncher is skipped, so manually store the visualizer</span>
         <span class="c1"># selection in SettingsManager (works in standalone mode via plain dict) so that</span>
         <span class="c1"># SimulationContext._get_cli_visualizer_types() can find it.</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.app.settings_manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_settings_manager</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.app</span><span class="w"> </span><span class="kn">import</span> <span class="n">AppLauncher</span>
 
         <span class="n">disable_all</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span> <span class="ow">in</span> <span class="n">visualizer_types</span>
-        <span class="n">active_types</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">disable_all</span> <span class="k">else</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">visualizer_types</span><span class="p">)</span>
-        <span class="n">visualizer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">active_types</span><span class="p">)</span>
-        <span class="n">settings</span> <span class="o">=</span> <span class="n">get_settings_manager</span><span class="p">()</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/types&quot;</span><span class="p">,</span> <span class="n">visualizer_str</span><span class="p">)</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/explicit&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/disable_all&quot;</span><span class="p">,</span> <span class="n">disable_all</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">,</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">):</span>
+            <span class="n">AppLauncher</span><span class="o">.</span><span class="n">sync_visualizer_cli_settings_to_carb</span><span class="p">(</span>
+                <span class="p">{</span><span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">),</span> <span class="s2">&quot;visualizer_explicit&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;visualizer_disable_all&quot;</span><span class="p">:</span> <span class="n">disable_all</span><span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">AppLauncher</span><span class="o">.</span><span class="n">sync_visualizer_cli_settings_to_carb</span><span class="p">(</span>
+                <span class="p">{</span><span class="o">**</span><span class="n">launcher_args</span><span class="p">,</span> <span class="s2">&quot;visualizer_explicit&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;visualizer_disable_all&quot;</span><span class="p">:</span> <span class="n">disable_all</span><span class="p">}</span>
+            <span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">yield</span>
@@ -952,7 +982,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

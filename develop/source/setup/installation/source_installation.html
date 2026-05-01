@@ -63,7 +63,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -160,6 +160,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="source_installation.html" selected>develop</option>
             <option value="../../../../main/source/setup/installation/source_installation.html" >main</option>
+            <option value="../../../../v3.0.0-beta/source/setup/installation/source_installation.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/source/setup/installation/source_installation.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/source/setup/installation/source_installation.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/source/setup/installation/source_installation.html" >v2.3.0</option>
@@ -303,6 +304,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -361,7 +363,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -812,7 +814,7 @@ variables to your terminal for the remaining of the installation instructions:</
 <label class="sd-tab-label" data-sync-group="os" data-sync-id="linux" for="sd-tab-item-2">
 <i class="fa-brands fa-linux"></i> Linux</label><div class="sd-tab-content docutils">
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Isaac Sim root directory</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ISAACSIM_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">pwd</span><span class="si">}</span><span class="s2">/_build/linux-x86_64/release&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">ISAACSIM_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PWD</span><span class="si">}</span><span class="s2">/_build/linux-x86_64/release&quot;</span>
 <span class="c1"># Isaac Sim python executable</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">ISAACSIM_PYTHON_EXE</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ISAACSIM_PATH</span><span class="si">}</span><span class="s2">/python.sh&quot;</span>
 </pre></div>
@@ -856,7 +858,7 @@ variables to your terminal for the remaining of the installation instructions:</
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># checks that python path is set correctly</span>
 <span class="si">${</span><span class="nv">ISAACSIM_PYTHON_EXE</span><span class="si">}</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;print(&#39;Isaac Sim configuration is now complete.&#39;)&quot;</span>
 <span class="c1"># checks that Isaac Sim can be launched from python</span>
-<span class="si">${</span><span class="nv">ISAACSIM_PYTHON_EXE</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">ISAACSIM_PATH</span><span class="si">}</span>/standalone_examples/api/isaacsim.core.api/add_cubes.py
+<span class="si">${</span><span class="nv">ISAACSIM_PYTHON_EXE</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">ISAACSIM_PATH</span><span class="si">}</span>/standalone_examples/api/isaacsim.core.experimental.api/add_cubes.py
 </pre></div>
 </div>
 </div>
@@ -866,7 +868,7 @@ variables to your terminal for the remaining of the installation instructions:</
 <div class="highlight-batch notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="c1">: checks that python path is set correctly</span>
 <span class="nv">%ISAACSIM_PYTHON_EXE%</span> -c <span class="s2">&quot;print(&#39;Isaac Sim configuration is now complete.&#39;)&quot;</span>
 <span class="p">:</span><span class="c1">: checks that Isaac Sim can be launched from python</span>
-<span class="nv">%ISAACSIM_PYTHON_EXE%</span> <span class="nv">%ISAACSIM_PATH%</span>\standalone_examples\api\isaacsim.core.api\add_cubes.py
+<span class="nv">%ISAACSIM_PYTHON_EXE%</span> <span class="nv">%ISAACSIM_PATH%</span>\standalone_examples\api\isaacsim.core.experimental.api\add_cubes.py
 </pre></div>
 </div>
 </div>
@@ -1112,7 +1114,7 @@ You can create the Isaac Lab environment using the following commands:</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Windows support for UV is currently unavailable. Please check
-<a class="reference external" href="https://github.com/isaac-sim/IsaacLab/issues/3438">issue #3483</a> to track progress.</p>
+<a class="reference external" href="https://github.com/isaac-sim/IsaacLab/issues/3438">issue #3438</a> to track progress.</p>
 </div>
 </div>
 </div>
@@ -1149,7 +1151,7 @@ isaaclab.bat --conda my_env  :: or <span class="s2">&quot;isaaclab.bat -c my_env
 </pre></div>
 </div>
 <div class="highlight-batch notranslate"><div class="highlight"><pre><span></span><span class="p">:</span><span class="c1">: Activate environment</span>
-conda activate env_isaaclab  # or <span class="s2">&quot;conda activate my_env&quot;</span>
+conda activate env_isaaclab  :: or <span class="s2">&quot;conda activate my_env&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -1422,7 +1424,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

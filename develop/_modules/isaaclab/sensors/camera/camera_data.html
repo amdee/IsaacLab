@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="camera_data.html" selected>develop</option>
             <option value="../../../../../main/index.html" >main</option>
+            <option value="../../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -665,12 +667,18 @@
 <span class="c1">#</span>
 <span class="c1"># SPDX-License-Identifier: BSD-3-Clause</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
 <span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 
+<span class="c1"># Re-exported as part of the public isaaclab.sensors.camera API</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.renderers.output_contract</span><span class="w"> </span><span class="kn">import</span> <span class="n">RenderBufferKind</span><span class="p">,</span> <span class="n">RenderBufferSpec</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.utils.math</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_camera_frame_orientation_convention</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;CameraData&quot;</span><span class="p">,</span> <span class="s2">&quot;RenderBufferKind&quot;</span><span class="p">,</span> <span class="s2">&quot;RenderBufferSpec&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="CameraData">
@@ -727,6 +735,83 @@
 <span class="sd">    For semantic-based data, this corresponds to the ``&quot;info&quot;`` key in the output of the sensor. For other sensor</span>
 <span class="sd">    types, the info is empty.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CameraData.allocate">
+<a class="viewcode-back" href="../../../../source/api/lab/isaaclab.sensors.html#isaaclab.sensors.CameraData.allocate">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">allocate</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">data_types</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+        <span class="n">height</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">num_views</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">device</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">supported_specs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">RenderBufferKind</span><span class="p">,</span> <span class="n">RenderBufferSpec</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CameraData</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a :class:`CameraData` with output buffers pre-allocated.</span>
+
+<span class="sd">        Allocates one ``(num_views, height, width, channels)`` tensor per kind</span>
+<span class="sd">        in the intersection of ``data_types`` and ``supported_specs``, using</span>
+<span class="sd">        the channels and dtype from each :class:`RenderBufferSpec`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data_types: Requested output names (typically :attr:`CameraCfg.data_types`).</span>
+<span class="sd">                Every name must be a member of :class:`RenderBufferKind`.</span>
+<span class="sd">            height: Image height in pixels.</span>
+<span class="sd">            width: Image width in pixels.</span>
+<span class="sd">            num_views: Number of camera views (batch dimension).</span>
+<span class="sd">            device: Torch device on which to allocate the buffers.</span>
+<span class="sd">            supported_specs: Per-buffer layout the active renderer can produce,</span>
+<span class="sd">                keyed by :class:`RenderBufferKind`. Names absent from this mapping</span>
+<span class="sd">                are not allocated.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A new :class:`CameraData` with :attr:`image_shape`, :attr:`output`,</span>
+<span class="sd">            and :attr:`info` populated; all other fields at their defaults.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If ``data_types`` contains names that are not members of</span>
+<span class="sd">                :class:`RenderBufferKind`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">requested</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">RenderBufferKind</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">unknown</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">data_types</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">requested</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">RenderBufferKind</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">unknown</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unknown</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown RenderBufferKind name(s): </span><span class="si">{</span><span class="n">unknown</span><span class="si">}</span><span class="s2">. Expected members of RenderBufferKind.&quot;</span><span class="p">)</span>
+        <span class="c1"># rgb is exposed as a view into rgba when the renderer publishes both,</span>
+        <span class="c1"># so requesting either one allocates the shared rgba buffer.</span>
+        <span class="n">rgb_alias</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGBA</span> <span class="ow">in</span> <span class="n">supported_specs</span>
+            <span class="ow">and</span> <span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGB</span> <span class="ow">in</span> <span class="n">supported_specs</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGB</span> <span class="ow">in</span> <span class="n">requested</span> <span class="ow">or</span> <span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGBA</span> <span class="ow">in</span> <span class="n">requested</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">rgb_alias</span><span class="p">:</span>
+            <span class="n">requested</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGB</span><span class="p">,</span> <span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGBA</span><span class="p">})</span>
+
+        <span class="n">buffers</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="n">supported_specs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">requested</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">rgb_alias</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">==</span> <span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGB</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">buffers</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">num_views</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">channels</span><span class="p">),</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">spec</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">rgb_alias</span><span class="p">:</span>
+            <span class="n">buffers</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGB</span><span class="p">)]</span> <span class="o">=</span> <span class="n">buffers</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">RenderBufferKind</span><span class="o">.</span><span class="n">RGBA</span><span class="p">)][</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">image_shape</span><span class="o">=</span><span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">),</span>
+            <span class="n">output</span><span class="o">=</span><span class="n">buffers</span><span class="p">,</span>
+            <span class="n">info</span><span class="o">=</span><span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">buffers</span><span class="p">},</span>
+        <span class="p">)</span></div>
+
 
     <span class="c1">##</span>
     <span class="c1"># Additional Frame orientation conventions</span>
@@ -802,7 +887,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

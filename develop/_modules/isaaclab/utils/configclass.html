@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="configclass.html" selected>develop</option>
             <option value="../../../../main/index.html" >main</option>
+            <option value="../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -667,6 +669,7 @@
 
 <span class="sd">&quot;&quot;&quot;Sub-module that provides a wrapper around the Python 3.7 onwards ``dataclasses`` module.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">dataclasses</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">types</span>
@@ -1301,6 +1304,43 @@
             <span class="n">resolve_cfg_presets</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cfg</span></div>
 
+
+
+<div class="viewcode-block" id="checked_apply">
+<a class="viewcode-back" href="../../../source/api/lab/isaaclab.utils.html#isaaclab.utils.configclass.checked_apply">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">checked_apply</span><span class="p">(</span><span class="n">src</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">target</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Forward every declared field on ``src`` (a dataclass) onto ``target``.</span>
+
+<span class="sd">    Used by Isaac Lab configclasses that mirror an upstream/external dataclass</span>
+<span class="sd">    (for example, Newton&#39;s ``ShapeConfig``): declare the overridable fields</span>
+<span class="sd">    once on the wrapper, then forward them to the upstream object via this</span>
+<span class="sd">    helper instead of writing ``setattr`` lines per field.</span>
+
+<span class="sd">    Raises :class:`AttributeError` if ``target`` is missing a field declared</span>
+<span class="sd">    on ``src``. The two structures must match — the check guards against</span>
+<span class="sd">    silent no-ops when the upstream API drifts (the bug class PR #5289 fixed</span>
+<span class="sd">    for Newton ``ShapeConfig.contact_margin`` → ``margin``).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        src: Dataclass instance whose declared fields will be forwarded.</span>
+<span class="sd">            Field names live here; this is the single source of truth.</span>
+<span class="sd">        target: Object to receive the field values. Must already expose</span>
+<span class="sd">            an attribute for every declared field on ``src``.</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        AttributeError: If ``target`` does not already have an attribute</span>
+<span class="sd">            matching one of ``src``&#39;s declared field names.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="s2">&quot;__dataclass_fields__&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;checked_apply: src must be a dataclass, got </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">fields</span><span class="p">(</span><span class="n">src</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+            <span class="n">target_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_path</span><span class="si">}</span><span class="s2"> has no attribute `</span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">`. </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">src</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> is out of sync with target.&quot;</span>
+            <span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">))</span></div>
+
 </pre></div>
 
                 </article>
@@ -1348,7 +1388,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

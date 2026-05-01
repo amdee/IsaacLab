@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="rigid_object_collection.html" selected>develop</option>
             <option value="../../../../../main/index.html" >main</option>
+            <option value="../../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -677,7 +679,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">wp</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">omni.physics.tensors.impl.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">physx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">omni.physics.tensors.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">physx</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pxr</span><span class="w"> </span><span class="kn">import</span> <span class="n">UsdPhysics</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">isaaclab.sim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sim_utils</span>
@@ -858,42 +860,22 @@
         <span class="c1"># write external wrench</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">active</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
-                <span class="c1"># Compose instantaneous wrench with permanent wrench</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">add_forces_and_torques_index</span><span class="p">(</span>
-                    <span class="n">forces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_force</span><span class="p">,</span>
-                    <span class="n">torques</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_torque</span><span class="p">,</span>
-                    <span class="n">body_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_BODY_INDICES</span><span class="p">,</span>
-                    <span class="n">env_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_ENV_INDICES</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="c1"># Apply both instantaneous and permanent wrench to the simulation</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">apply_forces_and_torques_at_position</span><span class="p">(</span>
-                    <span class="n">force_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reshape_data_to_view_2d</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">composed_force</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">torque_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reshape_data_to_view_2d</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">composed_torque</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">position_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_env_body_ids_to_view_ids</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_ENV_INDICES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_BODY_INDICES</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-                    <span class="p">),</span>
-                    <span class="n">is_global</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">composer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span>
+                <span class="n">composer</span><span class="o">.</span><span class="n">add_raw_buffers_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Apply permanent wrench to the simulation</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">apply_forces_and_torques_at_position</span><span class="p">(</span>
-                    <span class="n">force_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reshape_data_to_view_2d</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_force</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">torque_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reshape_data_to_view_2d</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_torque</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">position_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_env_body_ids_to_view_ids</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_ENV_INDICES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_BODY_INDICES</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
-                    <span class="p">),</span>
-                    <span class="n">is_global</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">composer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span>
+            <span class="n">composer</span><span class="o">.</span><span class="n">compose_to_body_frame</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">apply_forces_and_torques_at_position</span><span class="p">(</span>
+                <span class="n">force_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reshape_data_to_view_2d</span><span class="p">(</span><span class="n">composer</span><span class="o">.</span><span class="n">out_force_b</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                <span class="n">torque_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reshape_data_to_view_2d</span><span class="p">(</span><span class="n">composer</span><span class="o">.</span><span class="n">out_torque_b</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+                    <span class="n">wp</span><span class="o">.</span><span class="n">float32</span>
+                <span class="p">),</span>
+                <span class="n">position_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_env_body_ids_to_view_ids</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_ENV_INDICES</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_BODY_INDICES</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span>
+                <span class="p">),</span>
+                <span class="n">is_global</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
 
 
@@ -1127,8 +1109,6 @@
             <span class="p">],</span>
             <span class="n">outputs</span><span class="o">=</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_link_pose_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_link_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1229,9 +1209,6 @@
             <span class="n">outputs</span><span class="o">=</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_com_pose_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_link_pose_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_com_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_link_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1335,8 +1312,6 @@
             <span class="n">outputs</span><span class="o">=</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_com_vel_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_com_acc_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_com_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1450,9 +1425,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_link_vel_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_com_vel_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_com_acc_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_link_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._body_com_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1933,26 +1905,30 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_env_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_ids</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve environment indices to a warp array.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">env_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">env_ids</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_ENV_INDICES</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">env_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">env_ids</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
+                <span class="n">env_ids</span> <span class="o">=</span> <span class="n">env_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">env_ids</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_body_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body_ids</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve body indices to a warp array.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">body_ids</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="p">(</span><span class="n">body_ids</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_BODY_INDICES</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span>
                 <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_bodies</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)[</span><span class="n">body_ids</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span>
             <span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">body_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">body_ids</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
+                <span class="n">body_ids</span> <span class="o">=</span> <span class="n">body_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">body_ids</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_env_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_mask</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
@@ -2283,7 +2259,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

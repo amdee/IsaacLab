@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="sensor_base.html" selected>develop</option>
             <option value="../../../../main/index.html" >main</option>
+            <option value="../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -674,6 +676,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">weakref</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
@@ -690,6 +693,8 @@
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.sensor_base_cfg</span><span class="w"> </span><span class="kn">import</span> <span class="n">SensorBaseCfg</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="SensorBase">
@@ -1058,7 +1063,75 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_reset_mask</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_reset_mask_torch</span><span class="p">[</span><span class="n">env_ids</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_mask</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_mask</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_and_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">spawn_kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve physics-body prim paths and spawn the sensor prim if needed.</span>
+
+<span class="sd">        Behavior matrix (``spawn`` refers to ``cfg.spawn``):</span>
+
+<span class="sd">        +----------------+------------------+--------------------------------------------+</span>
+<span class="sd">        | ``spawn``      | ``prim_path``    | Action                                     |</span>
+<span class="sd">        +================+==================+============================================+</span>
+<span class="sd">        | not ``None``   | physics body     | Append ``/&lt;sensor_name&gt;``, spawn child.    |</span>
+<span class="sd">        +----------------+------------------+--------------------------------------------+</span>
+<span class="sd">        | not ``None``   | non-physics prim | Use existing prim, skip spawn.             |</span>
+<span class="sd">        |                | (already exists) |                                            |</span>
+<span class="sd">        +----------------+------------------+--------------------------------------------+</span>
+<span class="sd">        | not ``None``   | does not exist   | Spawn prim at ``prim_path``.               |</span>
+<span class="sd">        +----------------+------------------+--------------------------------------------+</span>
+<span class="sd">        | ``None``       | physics body     | Raise ``ValueError``.                      |</span>
+<span class="sd">        +----------------+------------------+--------------------------------------------+</span>
+<span class="sd">        | ``None``       | non-physics prim | Use as-is (no spawn).                      |</span>
+<span class="sd">        +----------------+------------------+--------------------------------------------+</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sensor_name: Short identifier (e.g. ``&quot;raycaster&quot;``, ``&quot;camera&quot;``).</span>
+<span class="sd">            **spawn_kwargs: Extra keyword arguments forwarded to ``cfg.spawn.func``</span>
+<span class="sd">                (e.g. ``translation``, ``orientation``).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: If ``spawn`` is ``None`` and ``prim_path`` is a physics body.</span>
+<span class="sd">            RuntimeError: If the prim does not exist after the spawn attempt.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">pxr</span><span class="w"> </span><span class="kn">import</span> <span class="n">UsdPhysics</span>  <span class="c1"># noqa: PLC0415</span>
+
+        <span class="n">spawn</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="p">,</span> <span class="s2">&quot;spawn&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">has_spawn</span> <span class="o">=</span> <span class="n">spawn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="c1"># Determine the path to probe for physics-body redirect</span>
+        <span class="n">spawn_path</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">spawn</span><span class="p">,</span> <span class="s2">&quot;spawn_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">has_spawn</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="n">probe_path</span> <span class="o">=</span> <span class="n">spawn_path</span> <span class="k">if</span> <span class="n">spawn_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span>
+
+        <span class="n">prim</span> <span class="o">=</span> <span class="n">sim_utils</span><span class="o">.</span><span class="n">find_first_matching_prim</span><span class="p">(</span><span class="n">probe_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prim</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">prim</span><span class="o">.</span><span class="n">IsValid</span><span class="p">():</span>
+            <span class="n">is_physics</span> <span class="o">=</span> <span class="n">prim</span><span class="o">.</span><span class="n">HasAPI</span><span class="p">(</span><span class="n">UsdPhysics</span><span class="o">.</span><span class="n">ArticulationRootAPI</span><span class="p">)</span> <span class="ow">or</span> <span class="n">prim</span><span class="o">.</span><span class="n">HasAPI</span><span class="p">(</span><span class="n">UsdPhysics</span><span class="o">.</span><span class="n">RigidBodyAPI</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">is_physics</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">has_spawn</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Sensor prim_path &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">&#39; resolves to a physics body but&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; no spawner is configured (spawn=None). Either set spawn or point&quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot; prim_path at a non-physics child (e.g. &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">sensor_name</span><span class="si">}</span><span class="s2">&#39;).&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Sensor prim_path &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">&#39; points at a physics body.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; Redirecting to &#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">sensor_name</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
+                <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">sensor_name</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">spawn</span><span class="p">,</span> <span class="s2">&quot;spawn_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">spawn</span><span class="o">.</span><span class="n">spawn_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spawn</span><span class="o">.</span><span class="n">spawn_path</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">sensor_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_spawn</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">spawn_target</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">spawn</span><span class="p">,</span> <span class="s2">&quot;spawn_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span>
+        <span class="n">prim</span> <span class="o">=</span> <span class="n">sim_utils</span><span class="o">.</span><span class="n">find_first_matching_prim</span><span class="p">(</span><span class="n">spawn_target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prim</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">prim</span><span class="o">.</span><span class="n">IsValid</span><span class="p">():</span>
+            <span class="n">spawn</span><span class="o">.</span><span class="n">func</span><span class="p">(</span><span class="n">spawn_target</span><span class="p">,</span> <span class="n">spawn</span><span class="p">,</span> <span class="o">**</span><span class="n">spawn_kwargs</span><span class="p">)</span>
+
+        <span class="n">check_path</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">spawn</span><span class="p">,</span> <span class="s2">&quot;spawn_path&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sim_utils</span><span class="o">.</span><span class="n">find_matching_prims</span><span class="p">(</span><span class="n">check_path</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not find prim with path </span><span class="si">{</span><span class="n">check_path</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 
@@ -1107,7 +1180,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

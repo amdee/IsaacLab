@@ -63,7 +63,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -160,6 +160,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="migrating_to_isaaclab_3-0.html" selected>develop</option>
             <option value="../../../main/index.html" >main</option>
+            <option value="../../../v3.0.0-beta/source/migration/migrating_to_isaaclab_3-0.html" >v3.0.0-beta</option>
             <option value="../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../v2.3.0/index.html" >v2.3.0</option>
@@ -303,6 +304,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -361,7 +363,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -726,6 +728,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizer-cli-and-headless-behavior">Visualizer CLI and Headless Behavior</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-backend-architecture">Multi-Backend Architecture</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-isaaclab-physx-and-isaaclab-newton-extensions">New <code class="docutils literal notranslate"><span class="pre">isaaclab_physx</span></code> and <code class="docutils literal notranslate"><span class="pre">isaaclab_newton</span></code> Extensions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#renaming-of-xformprimview-to-frameview">Renaming of <code class="docutils literal notranslate"><span class="pre">XformPrimView</span></code> to <code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unchanged-imports">Unchanged Imports</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-isaaclab-newton-extension">New <code class="docutils literal notranslate"><span class="pre">isaaclab_newton</span></code> Extension</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deformable-object-api-changes">Deformable Object API Changes</a></li>
@@ -761,12 +764,20 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices-for-migration">Best Practices for Migration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-runtime-quaternion-access-detector">Using the Runtime Quaternion Access Detector</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-changes">API Changes</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-convert-quat-function-has-been-removed">The <code class="docutils literal notranslate"><span class="pre">convert_quat</span></code> function has been removed</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#math-utility-functions-now-expect-xyzw">Math utility functions now expect XYZW</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warp-backend-for-asset-and-sensor-data">Warp Backend for Asset and Sensor Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proxyarray-backend-for-asset-and-sensor-data">ProxyArray Backend for Asset and Sensor Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ray-caster-warp-backend">Ray Caster Warp Backend</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#raycasterdata-return-types">RayCasterData Return Types</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ray-alignment-configuration">Ray Alignment Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#raycasting-kernel-signature-change">Raycasting Kernel Signature Change</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#raycaster-meshes-cache-key">RayCaster.meshes Cache Key</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-method-index-mask-split">Write Method Index/Mask Split</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#timestampedbufferwarp">TimestampedBufferWarp</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#urdf-importer">URDF Importer</a><ul class="nav section-nav flex-column">
@@ -790,6 +801,15 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backward-compatibility">Backward Compatibility</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proxyarray-interop-and-temporary-compatibility">ProxyArray Interop and Temporary Compatibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-off-deprecated-isaac-sim-apis">Migration off Deprecated Isaac Sim APIs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-module-renames">Python module renames</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kit-experience-kit-updates">Kit experience (<code class="docutils literal notranslate"><span class="pre">.kit</span></code>) updates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simulationmanager-is-no-longer-re-exported"><code class="docutils literal notranslate"><span class="pre">SimulationManager</span></code> is no longer re-exported</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#retired-standalone-reproducers">Retired standalone reproducers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physx-tensors-api-module-path">PhysX Tensors API Module Path</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#need-help">Need Help?</a></li>
 </ul>
             </nav>
@@ -894,6 +914,55 @@ RigidObject).</p></li>
 <p>The <code class="docutils literal notranslate"><span class="pre">isaaclab_physx</span></code> extension is installed automatically with Isaac Lab. No additional
 installation steps are required.</p>
 </div>
+<section id="renaming-of-xformprimview-to-frameview">
+<h3>Renaming of <code class="docutils literal notranslate"><span class="pre">XformPrimView</span></code> to <code class="docutils literal notranslate"><span class="pre">FrameView</span></code><a class="headerlink" href="#renaming-of-xformprimview-to-frameview" title="Link to this heading">#</a></h3>
+<p>Isaac Lab’s <code class="docutils literal notranslate"><span class="pre">XformPrimView</span></code> and related classes have been renamed to <code class="docutils literal notranslate"><span class="pre">FrameView</span></code> to
+better reflect their purpose and avoid confusion with Isaac Sim’s <code class="docutils literal notranslate"><span class="pre">XFormPrim</span></code> class
+hierarchy. The old <code class="docutils literal notranslate"><span class="pre">XformPrimView</span></code> name is kept as a deprecated alias.</p>
+<p>The rename applies across all backends:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Isaac Lab 2.x</p></th>
+<th class="head"><p>Isaac Lab 3.0</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">BaseXformPrimView</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.views.html#isaaclab.sim.views.BaseFrameView" title="isaaclab.sim.views.BaseFrameView"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseFrameView</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">UsdXformPrimView</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.views.html#isaaclab.sim.views.UsdFrameView" title="isaaclab.sim.views.UsdFrameView"><code class="xref py py-class docutils literal notranslate"><span class="pre">UsdFrameView</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">XformPrimView</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.views.html#isaaclab.sim.views.FrameView" title="isaaclab.sim.views.FrameView"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameView</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">FabricXformPrimView</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">FabricFrameView</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">NewtonSiteXformPrimView</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NewtonSiteFrameView</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For most users, the only change needed is updating imports:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.sim.views</span><span class="w"> </span><span class="kn">import</span> <span class="n">XformPrimView</span>
+
+<span class="c1"># After</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.sim.views</span><span class="w"> </span><span class="kn">import</span> <span class="n">FrameView</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="../api/lab/isaaclab.sim.views.html#isaaclab.sim.views.FrameView" title="isaaclab.sim.views.FrameView"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameView</span></code></a> factory automatically dispatches to the correct
+backend (<code class="xref py py-class docutils literal notranslate"><span class="pre">FabricFrameView</span></code> for PhysX,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">NewtonSiteFrameView</span></code> for Newton) based on the active
+physics backend. The deprecated <code class="docutils literal notranslate"><span class="pre">XformPrimView</span></code> alias continues to work but will be
+removed in a future release.</p>
+</section>
 <section id="unchanged-imports">
 <h3>Unchanged Imports<a class="headerlink" href="#unchanged-imports" title="Link to this heading">#</a></h3>
 <p>The following asset classes remain in the <code class="docutils literal notranslate"><span class="pre">isaaclab</span></code> package and can still be imported as before:</p>
@@ -1635,6 +1704,47 @@ not be quaternions (e.g., RGBA colors, bounding boxes).</p></li>
 <li><p><strong>Check documentation</strong> - Update any docs or comments that mention quaternion format.</p></li>
 </ol>
 </section>
+<section id="using-the-runtime-quaternion-access-detector">
+<h2>Using the Runtime Quaternion Access Detector<a class="headerlink" href="#using-the-runtime-quaternion-access-detector" title="Link to this heading">#</a></h2>
+<p>The quaternion finder tool above covers hard-coded values in source files,
+but it cannot see quaternions that are <em>read</em> from asset/sensor data at
+runtime. For those, Isaac Lab ships a
+runtime detector hook on <a class="reference internal" href="../api/lab/isaaclab.utils.html#isaaclab.utils.warp.ProxyArray" title="isaaclab.utils.warp.ProxyArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProxyArray</span></code></a> that flags
+every <code class="docutils literal notranslate"><span class="pre">.torch</span></code> access on a <code class="docutils literal notranslate"><span class="pre">wp.quatf</span></code>-typed property and points at the
+exact call site. Use it after the source-level migration to catch the cases
+the finder tool can’t reach.</p>
+<p>Enable it by setting an environment variable before launching your script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">WARN_ON_TORCH_QUATF_ACCESS</span><span class="o">=</span><span class="m">1</span>
+./isaaclab.sh<span class="w"> </span>-p<span class="w"> </span>my_script.py
+</pre></div>
+</div>
+<p>Every read of <code class="docutils literal notranslate"><span class="pre">.torch</span></code> on a <code class="docutils literal notranslate"><span class="pre">ProxyArray</span></code> whose underlying <code class="docutils literal notranslate"><span class="pre">wp.array</span></code> has
+dtype <code class="docutils literal notranslate"><span class="pre">wp.quatf</span></code> then emits a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#UserWarning" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserWarning</span></code></a> with the message:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Reading .torch on a wp.quatf-typed ProxyArray. The Isaac Lab quaternion
+convention changed from (w, x, y, z) in 2.x to (x, y, z, w) in 3.x. If
+your code assumes the old order, this is likely the source of incorrect
+rotations. Unset WARN_ON_TORCH_QUATF_ACCESS to silence this warning.
+</pre></div>
+</div>
+<p>The warning’s traceback points at the exact line that performed the access
+(via <code class="docutils literal notranslate"><span class="pre">stacklevel=2</span></code>), so you can walk through the matches in your code and
+confirm each one uses the new <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z,</span> <span class="pre">w)</span></code> order.</p>
+<p>Typical workflow:</p>
+<ol class="arabic simple">
+<li><p>Run a representative scene or task with the env var set.</p></li>
+<li><p>Triage every warning location — check whether the call site assumes
+<code class="docutils literal notranslate"><span class="pre">(w,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">z)</span></code> (Lab 2.x) or <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z,</span> <span class="pre">w)</span></code> (Lab 3.x).</p></li>
+<li><p>Migrate the call sites that still expect the old order.</p></li>
+<li><p>Re-run with the env var still set; the warnings should be gone (or only
+come from intentionally-handled call sites).</p></li>
+<li><p>Unset the env var for production runs — the detector adds an
+<code class="docutils literal notranslate"><span class="pre">os.environ</span></code> lookup per <code class="docutils literal notranslate"><span class="pre">.torch</span></code> access, which is cheap but not free.</p></li>
+</ol>
+<p>The detector covers only <code class="docutils literal notranslate"><span class="pre">ProxyArray.torch</span></code> reads. Direct accesses on the
+underlying <code class="docutils literal notranslate"><span class="pre">wp.array</span></code> (via <code class="docutils literal notranslate"><span class="pre">ProxyArray.warp</span></code>) are not flagged, because
+warp uses <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">z,</span> <span class="pre">w)</span></code> natively and so a warp-side read is unaffected
+by the convention change.</p>
+</section>
 <section id="api-changes">
 <h2>API Changes<a class="headerlink" href="#api-changes" title="Link to this heading">#</a></h2>
 <section id="the-convert-quat-function-has-been-removed">
@@ -1663,32 +1773,31 @@ quaternions in XYZW format:</p>
 </ul>
 </section>
 </section>
-<section id="warp-backend-for-asset-and-sensor-data">
-<h2>Warp Backend for Asset and Sensor Data<a class="headerlink" href="#warp-backend-for-asset-and-sensor-data" title="Link to this heading">#</a></h2>
-<p>All <code class="docutils literal notranslate"><span class="pre">.data.*</span></code> properties on asset and sensor classes now return <code class="docutils literal notranslate"><span class="pre">wp.array</span></code> instead of
-<code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>. This change applies to all asset classes (<a class="reference internal" href="../api/lab/isaaclab.assets.html#isaaclab.assets.Articulation" title="isaaclab.assets.Articulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Articulation</span></code></a>,
+<section id="proxyarray-backend-for-asset-and-sensor-data">
+<h2>ProxyArray Backend for Asset and Sensor Data<a class="headerlink" href="#proxyarray-backend-for-asset-and-sensor-data" title="Link to this heading">#</a></h2>
+<p>All <code class="docutils literal notranslate"><span class="pre">.data.*</span></code> properties on asset and sensor classes now return
+<a class="reference internal" href="../api/lab/isaaclab.utils.html#isaaclab.utils.warp.ProxyArray" title="isaaclab.utils.warp.ProxyArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProxyArray</span></code></a> instead of <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>. <code class="docutils literal notranslate"><span class="pre">ProxyArray</span></code> wraps
+the underlying <code class="docutils literal notranslate"><span class="pre">wp.array</span></code> and exposes explicit <code class="docutils literal notranslate"><span class="pre">.torch</span></code> and <code class="docutils literal notranslate"><span class="pre">.warp</span></code> accessors. This
+change applies to all asset classes (<a class="reference internal" href="../api/lab/isaaclab.assets.html#isaaclab.assets.Articulation" title="isaaclab.assets.Articulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Articulation</span></code></a>,
 <a class="reference internal" href="../api/lab/isaaclab.assets.html#isaaclab.assets.RigidObject" title="isaaclab.assets.RigidObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigidObject</span></code></a>, <a class="reference internal" href="../api/lab/isaaclab.assets.html#isaaclab.assets.RigidObjectCollection" title="isaaclab.assets.RigidObjectCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">RigidObjectCollection</span></code></a>,
 <a class="reference internal" href="../api/lab_physx/isaaclab_physx.assets.html#isaaclab_physx.assets.DeformableObject" title="isaaclab_physx.assets.DeformableObject"><code class="xref py py-class docutils literal notranslate"><span class="pre">DeformableObject</span></code></a>) and all sensor classes
 (<code class="xref py py-class docutils literal notranslate"><span class="pre">ContactSensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Imu</span></code>,
 <code class="xref py py-class docutils literal notranslate"><span class="pre">Pva</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">FrameTransformer</span></code>).</p>
-<p>To convert back to <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> for use with PyTorch operations, wrap the property
-access with <code class="docutils literal notranslate"><span class="pre">wp.to_torch()</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">wp</span>
-
-<span class="c1"># Before (Isaac Lab 2.x)</span>
+<p>To use a data property as a <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, append <code class="docutils literal notranslate"><span class="pre">.torch</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before (Isaac Lab 2.x)</span>
 <span class="n">root_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span>             <span class="c1"># torch.Tensor</span>
 <span class="n">joint_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span>              <span class="c1"># torch.Tensor</span>
 <span class="n">contact_forces</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">net_forces_w</span>     <span class="c1"># torch.Tensor</span>
 
 <span class="c1"># After (Isaac Lab 3.x)</span>
-<span class="n">root_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span>              <span class="c1"># wp.array</span>
-<span class="n">joint_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span>              <span class="c1"># wp.array</span>
-<span class="n">contact_forces</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">net_forces_w</span>     <span class="c1"># wp.array</span>
+<span class="n">root_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span>              <span class="c1"># ProxyArray</span>
+<span class="n">joint_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span>              <span class="c1"># ProxyArray</span>
+<span class="n">contact_forces</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">net_forces_w</span>     <span class="c1"># ProxyArray</span>
 
-<span class="c1"># To use with torch operations, wrap with wp.to_torch()</span>
-<span class="n">root_pos_torch</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="p">)</span>        <span class="c1"># torch.Tensor</span>
-<span class="n">joint_pos_torch</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="p">)</span>        <span class="c1"># torch.Tensor</span>
-<span class="n">contact_torch</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">sensor</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">net_forces_w</span><span class="p">)</span>      <span class="c1"># torch.Tensor</span>
+<span class="c1"># To use with torch operations, access .torch</span>
+<span class="n">root_pos_torch</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="o">.</span><span class="n">torch</span>        <span class="c1"># torch.Tensor</span>
+<span class="n">joint_pos_torch</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="o">.</span><span class="n">torch</span>        <span class="c1"># torch.Tensor</span>
+<span class="n">contact_torch</span> <span class="o">=</span> <span class="n">sensor</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">net_forces_w</span><span class="o">.</span><span class="n">torch</span>      <span class="c1"># torch.Tensor</span>
 </pre></div>
 </div>
 <p>Common patterns that need updating:</p>
@@ -1696,19 +1805,19 @@ access with <code class="docutils literal notranslate"><span class="pre">wp.to_t
 <span class="c1"># Before:</span>
 <span class="n">pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 <span class="c1"># After:</span>
-<span class="n">pos</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="p">)</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="n">pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
 
 <span class="c1"># Creating zero tensors with matching shape</span>
 <span class="c1"># Before:</span>
 <span class="n">zeros</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="p">)</span>
 <span class="c1"># After:</span>
-<span class="n">zeros</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="p">))</span>
+<span class="n">zeros</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="o">.</span><span class="n">torch</span><span class="p">)</span>
 
 <span class="c1"># Assertions in tests</span>
 <span class="c1"># Before:</span>
 <span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
 <span class="c1"># After:</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="p">),</span> <span class="n">expected</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="o">.</span><span class="n">torch</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="pst-scrollable-table-container"><table class="table" id="id3">
@@ -1747,24 +1856,144 @@ access with <code class="docutils literal notranslate"><span class="pre">wp.to_t
 <tr class="row-odd"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameTransformer</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">isaaclab_physx</span></code></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCaster" title="isaaclab.sensors.RayCaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayCaster</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaaclab</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCasterCamera" title="isaaclab.sensors.RayCasterCamera"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayCasterCamera</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaaclab</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.MultiMeshRayCaster" title="isaaclab.sensors.MultiMeshRayCaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiMeshRayCaster</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaaclab</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.MultiMeshRayCasterCamera" title="isaaclab.sensors.MultiMeshRayCasterCamera"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiMeshRayCasterCamera</span></code></a></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaaclab</span></code></p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>An automated migration tool is provided at <code class="docutils literal notranslate"><span class="pre">scripts/tools/wrap_warp_to_torch.py</span></code>.
-It scans Python files for <code class="docutils literal notranslate"><span class="pre">.data.&lt;property&gt;</span></code> accesses and wraps them with
-<code class="docutils literal notranslate"><span class="pre">wp.to_torch()</span></code>. Usage:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Dry run (preview changes)</span>
-python<span class="w"> </span>scripts/tools/wrap_warp_to_torch.py<span class="w"> </span>path/to/your/code<span class="w"> </span>--dry-run
+<p><code class="docutils literal notranslate"><span class="pre">wp.to_torch(proxy_array)</span></code> is temporarily supported by a compatibility shim. It returns
+the same zero-copy tensor as <code class="docutils literal notranslate"><span class="pre">proxy_array.torch</span></code> and emits a one-time
+<code class="docutils literal notranslate"><span class="pre">DeprecationWarning</span></code>. This shim exists for older migration code and will be removed in a
+future release; prefer <code class="docutils literal notranslate"><span class="pre">.torch</span></code> in new code.</p>
+</div>
+</section>
+<section id="ray-caster-warp-backend">
+<h2>Ray Caster Warp Backend<a class="headerlink" href="#ray-caster-warp-backend" title="Link to this heading">#</a></h2>
+<p>The <a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCaster" title="isaaclab.sensors.RayCaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayCaster</span></code></a>, <a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCasterCamera" title="isaaclab.sensors.RayCasterCamera"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayCasterCamera</span></code></a>,
+<a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.MultiMeshRayCaster" title="isaaclab.sensors.MultiMeshRayCaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiMeshRayCaster</span></code></a>, and
+<a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.MultiMeshRayCasterCamera" title="isaaclab.sensors.MultiMeshRayCasterCamera"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiMeshRayCasterCamera</span></code></a> sensors have been transitioned from a
+PyTorch/USD-based backend to a native Warp kernel pipeline. This improves performance by
+eliminating per-step tensor allocations and torch-to-warp conversions, but introduces several
+breaking changes.</p>
+<section id="raycasterdata-return-types">
+<h3>RayCasterData Return Types<a class="headerlink" href="#raycasterdata-return-types" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCasterData.pos_w" title="isaaclab.sensors.RayCasterData.pos_w"><code class="xref py py-attr docutils literal notranslate"><span class="pre">pos_w</span></code></a>,
+<a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCasterData.quat_w" title="isaaclab.sensors.RayCasterData.quat_w"><code class="xref py py-attr docutils literal notranslate"><span class="pre">quat_w</span></code></a>, and
+<a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCasterData.ray_hits_w" title="isaaclab.sensors.RayCasterData.ray_hits_w"><code class="xref py py-attr docutils literal notranslate"><span class="pre">ray_hits_w</span></code></a> properties now return
+<a class="reference internal" href="../api/lab/isaaclab.utils.html#isaaclab.utils.warp.ProxyArray" title="isaaclab.utils.warp.ProxyArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProxyArray</span></code></a> instead of <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code>. This follows the same
+pattern as the general ProxyArray backend migration described above.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before (Isaac Lab 2.x)</span>
+<span class="n">ray_hits</span> <span class="o">=</span> <span class="n">ray_caster</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ray_hits_w</span>        <span class="c1"># torch.Tensor</span>
+<span class="n">sensor_pos</span> <span class="o">=</span> <span class="n">ray_caster</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pos_w</span>            <span class="c1"># torch.Tensor</span>
 
-<span class="c1"># Apply changes in-place</span>
-python<span class="w"> </span>scripts/tools/wrap_warp_to_torch.py<span class="w"> </span>path/to/your/code
+<span class="c1"># After (Isaac Lab 3.x)</span>
+<span class="n">ray_hits</span> <span class="o">=</span> <span class="n">ray_caster</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ray_hits_w</span>         <span class="c1"># ProxyArray</span>
+<span class="n">sensor_pos</span> <span class="o">=</span> <span class="n">ray_caster</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pos_w</span>            <span class="c1"># ProxyArray</span>
+
+<span class="c1"># To use with torch operations, access .torch</span>
+<span class="n">ray_hits_torch</span> <span class="o">=</span> <span class="n">ray_caster</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">ray_hits_w</span><span class="o">.</span><span class="n">torch</span>
+<span class="n">sensor_pos_torch</span> <span class="o">=</span> <span class="n">ray_caster</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pos_w</span><span class="o">.</span><span class="n">torch</span>
 </pre></div>
 </div>
-<p>Always review the changes after running the tool, as some accesses (e.g., those
-already passed to warp-native functions) should not be wrapped.</p>
+</section>
+<section id="ray-alignment-configuration">
+<h3>Ray Alignment Configuration<a class="headerlink" href="#ray-alignment-configuration" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">attach_yaw_only</span></code> boolean parameter on <a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCasterCfg" title="isaaclab.sensors.RayCasterCfg"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayCasterCfg</span></code></a> has been
+deprecated in favor of the new <code class="docutils literal notranslate"><span class="pre">ray_alignment</span></code> parameter, which accepts one of three string
+values:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 40.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Old (2.x)</p></th>
+<th class="head"><p>New (3.0)</p></th>
+<th class="head"><p>Behavior</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">attach_yaw_only=False</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ray_alignment=&quot;base&quot;</span></code></p></td>
+<td><p>Rays follow the full sensor orientation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">attach_yaw_only=True</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ray_alignment=&quot;yaw&quot;</span></code></p></td>
+<td><p>Rays follow only the yaw component of the sensor orientation.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>(not available)</em></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ray_alignment=&quot;world&quot;</span></code></p></td>
+<td><p>Rays are always cast in the world frame (no rotation applied).</p></td>
+</tr>
+</tbody>
+</table>
 </div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before (Isaac Lab 2.x)</span>
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">RayCasterCfg</span><span class="p">(</span><span class="n">attach_yaw_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># After (Isaac Lab 3.x)</span>
+<span class="n">cfg</span> <span class="o">=</span> <span class="n">RayCasterCfg</span><span class="p">(</span><span class="n">ray_alignment</span><span class="o">=</span><span class="s2">&quot;yaw&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="raycasting-kernel-signature-change">
+<h3>Raycasting Kernel Signature Change<a class="headerlink" href="#raycasting-kernel-signature-change" title="Link to this heading">#</a></h3>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">raycast_dynamic_meshes_kernel()</span></code> Warp kernel now requires
+an <code class="docutils literal notranslate"><span class="pre">env_mask</span></code> parameter as its first argument. This is a <code class="docutils literal notranslate"><span class="pre">wp.array(dtype=wp.bool)</span></code> that
+controls which environments are updated. The public Python wrapper
+<code class="xref py py-func docutils literal notranslate"><span class="pre">raycast_dynamic_meshes()</span></code> has been updated to inject an all-True
+mask automatically, so code using the wrapper is unaffected.</p>
+<p>If you call the kernel directly, update your launch call:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">wp</span>
+
+<span class="c1"># Before (Isaac Lab 2.x)</span>
+<span class="n">wp</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span>
+    <span class="n">raycast_dynamic_meshes_kernel</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="n">num_meshes</span><span class="p">,</span> <span class="n">num_envs</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">),</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">ray_starts</span><span class="p">,</span> <span class="n">ray_directions</span><span class="p">,</span> <span class="n">mesh_ids</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+<span class="p">)</span>
+
+<span class="c1"># After (Isaac Lab 3.x) -- env_mask is now the first input</span>
+<span class="n">env_mask</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_envs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="n">wp</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span>
+    <span class="n">raycast_dynamic_meshes_kernel</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="n">num_meshes</span><span class="p">,</span> <span class="n">num_envs</span><span class="p">,</span> <span class="n">num_rays</span><span class="p">),</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">env_mask</span><span class="p">,</span> <span class="n">ray_starts</span><span class="p">,</span> <span class="n">ray_directions</span><span class="p">,</span> <span class="n">mesh_ids</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="raycaster-meshes-cache-key">
+<h3>RayCaster.meshes Cache Key<a class="headerlink" href="#raycaster-meshes-cache-key" title="Link to this heading">#</a></h3>
+<p>The <a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCaster.meshes" title="isaaclab.sensors.RayCaster.meshes"><code class="xref py py-attr docutils literal notranslate"><span class="pre">meshes</span></code></a> class variable, which caches warp meshes across
+all <a class="reference internal" href="../api/lab/isaaclab.sensors.html#isaaclab.sensors.RayCaster" title="isaaclab.sensors.RayCaster"><code class="xref py py-class docutils literal notranslate"><span class="pre">RayCaster</span></code></a> instances, is now keyed by <code class="docutils literal notranslate"><span class="pre">(prim_path,</span> <span class="pre">device)</span></code> tuples
+instead of by <code class="docutils literal notranslate"><span class="pre">prim_path</span></code> alone. This prevents a mesh that was built on one device (e.g. CPU)
+from being reused by a sensor running on a different device (e.g. CUDA), which caused illegal
+memory accesses on systems without unified memory.</p>
+<p>Code that reads or writes this cache directly must update both the type annotation and the key:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before (Isaac Lab 2.x)</span>
+<span class="n">meshes</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">Mesh</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">wp_mesh</span> <span class="o">=</span> <span class="n">RayCaster</span><span class="o">.</span><span class="n">meshes</span><span class="p">[</span><span class="n">prim_path</span><span class="p">]</span>
+
+<span class="c1"># After (Isaac Lab 3.x)</span>
+<span class="n">meshes</span><span class="p">:</span> <span class="n">ClassVar</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">wp</span><span class="o">.</span><span class="n">Mesh</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">wp_mesh</span> <span class="o">=</span> <span class="n">RayCaster</span><span class="o">.</span><span class="n">meshes</span><span class="p">[(</span><span class="n">prim_path</span><span class="p">,</span> <span class="n">device</span><span class="p">)]</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="write-method-index-mask-split">
 <h2>Write Method Index/Mask Split<a class="headerlink" href="#write-method-index-mask-split" title="Link to this heading">#</a></h2>
@@ -2312,6 +2541,201 @@ field with <code class="docutils literal notranslate"><span class="pre">IsaacTel
 compatibility. These will be removed in a future release.</p>
 </section>
 </section>
+<section id="proxyarray-interop-and-temporary-compatibility">
+<span id="torcharray-migration"></span><h2>ProxyArray Interop and Temporary Compatibility<a class="headerlink" href="#proxyarray-interop-and-temporary-compatibility" title="Link to this heading">#</a></h2>
+<p>Asset and sensor data class properties return <a class="reference internal" href="../api/lab/isaaclab.utils.html#isaaclab.utils.warp.ProxyArray" title="isaaclab.utils.warp.ProxyArray"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProxyArray</span></code></a>, a
+lightweight wrapper with explicit <code class="docutils literal notranslate"><span class="pre">.torch</span></code> and <code class="docutils literal notranslate"><span class="pre">.warp</span></code> accessors:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># BEFORE (2.x) — properties returned torch.Tensor directly</span>
+<span class="n">joint_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span>          <span class="c1"># torch.Tensor</span>
+<span class="n">root_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span>          <span class="c1"># torch.Tensor</span>
+
+<span class="c1"># AFTER (3.0) — properties return ProxyArray, use .torch for the tensor</span>
+<span class="n">joint_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="o">.</span><span class="n">torch</span>    <span class="c1"># cached zero-copy torch.Tensor</span>
+<span class="n">root_pos</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_pos_w</span><span class="o">.</span><span class="n">torch</span>    <span class="c1"># cached zero-copy torch.Tensor</span>
+<span class="n">joint_pos_warp</span> <span class="o">=</span> <span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="o">.</span><span class="n">warp</span>  <span class="c1"># the underlying warp.array</span>
+</pre></div>
+</div>
+<p><strong>Automatic interop — in many cases, no changes are needed:</strong></p>
+<ul>
+<li><p><strong>Warp kernels:</strong> <code class="docutils literal notranslate"><span class="pre">ProxyArray</span></code> implements <code class="docutils literal notranslate"><span class="pre">__cuda_array_interface__</span></code>, so it can be passed
+directly to <code class="docutils literal notranslate"><span class="pre">wp.launch()</span></code> without calling <code class="docutils literal notranslate"><span class="pre">.warp</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Just works — no .warp needed</span>
+<span class="n">wp</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">my_kernel</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="p">],</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Torch functions:</strong> <code class="docutils literal notranslate"><span class="pre">ProxyArray</span></code> implements <code class="docutils literal notranslate"><span class="pre">__torch_function__</span></code>, so <code class="docutils literal notranslate"><span class="pre">torch.*</span></code> operations
+accept it directly. During the deprecation period this emits a one-time warning, but works:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Works (emits DeprecationWarning once, then silent)</span>
+<span class="n">mean_pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">clipped</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">robot</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.14</span><span class="p">,</span> <span class="mf">3.14</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p><strong>What to change:</strong></p>
+<ol class="arabic simple">
+<li><p>Append <code class="docutils literal notranslate"><span class="pre">.torch</span></code> where you need an explicit <code class="docutils literal notranslate"><span class="pre">torch.Tensor</span></code> (e.g., for indexing, slicing,
+or passing to non-torch libraries).</p></li>
+<li><p>Warp kernel calls need no changes — <code class="docutils literal notranslate"><span class="pre">ProxyArray</span></code> works transparently.</p></li>
+<li><p>If you need the underlying <code class="docutils literal notranslate"><span class="pre">warp.array</span></code> (e.g., for <code class="docutils literal notranslate"><span class="pre">ptr</span></code>, <code class="docutils literal notranslate"><span class="pre">strides</span></code>), use <code class="docutils literal notranslate"><span class="pre">.warp</span></code>.</p></li>
+<li><p>Replace legacy <code class="docutils literal notranslate"><span class="pre">wp.to_torch(proxy_array)</span></code> calls with <code class="docutils literal notranslate"><span class="pre">proxy_array.torch</span></code>.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">__torch_function__</span></code> bridge and the temporary <code class="docutils literal notranslate"><span class="pre">wp.to_torch(proxy_array)</span></code> shim will
+be removed in a future release. We recommend migrating to explicit <code class="docutils literal notranslate"><span class="pre">.torch</span></code> access now.</p>
+</div>
+<p>For a complete guide, see <a class="reference internal" href="../how-to/proxy_array.html"><span class="doc">Working with ProxyArray</span></a>.</p>
+</section>
+<section id="migration-off-deprecated-isaac-sim-apis">
+<h2>Migration off Deprecated Isaac Sim APIs<a class="headerlink" href="#migration-off-deprecated-isaac-sim-apis" title="Link to this heading">#</a></h2>
+<p>In Isaac Sim 6.0, the legacy <code class="docutils literal notranslate"><span class="pre">isaacsim.core.*</span></code>, <code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.*</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">isaacsim.robot.wheeled_robots</span></code> Python module paths are <strong>deprecated</strong> in favor of their
+<code class="docutils literal notranslate"><span class="pre">isaacsim.core.experimental.*</span></code> (and <code class="docutils literal notranslate"><span class="pre">*.experimental.*</span></code>) equivalents. Isaac Lab 3.0 has
+been migrated off the deprecated paths so that Isaac Lab continues to load and run when
+those modules are removed in a future Isaac Sim release.</p>
+<p>This is mostly a transparent change for users — Isaac Lab’s own public Python API
+(<code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab</span></code>, <code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab_physx</span></code>, <code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab_tasks</span></code>, <a class="reference internal" href="../api/lab_teleop/isaaclab_teleop.html#module-isaaclab_teleop" title="isaaclab_teleop"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab_teleop</span></code></a>,
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab_mimic</span></code>) is unchanged. The migration is only user-visible if you:</p>
+<ol class="arabic simple">
+<li><p>Import Isaac Sim symbols <strong>directly</strong> in your project, or</p></li>
+<li><p>Maintain a custom Kit experience (<code class="docutils literal notranslate"><span class="pre">.kit</span></code> file) that lists Isaac Sim extension
+dependencies, or</p></li>
+<li><p>Imported <code class="docutils literal notranslate"><span class="pre">SimulationManager</span></code> from <code class="docutils literal notranslate"><span class="pre">isaacsim.core.simulation_manager</span></code> in your own
+PhysX-backed code.</p></li>
+</ol>
+<section id="python-module-renames">
+<h3>Python module renames<a class="headerlink" href="#python-module-renames" title="Link to this heading">#</a></h3>
+<p>Update direct imports in your own code as follows. <strong>Where Isaac Lab provides an in-tree
+replacement, prefer the Isaac Lab API</strong> over the <code class="docutils literal notranslate"><span class="pre">isaacsim.core.experimental.*</span></code> fallback:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 45.0%" />
+<col style="width: 55.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Deprecated Isaac Sim path</p></th>
+<th class="head"><p>Recommended replacement</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.utils.stage</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.utils.html#module-isaaclab.sim.utils.stage" title="isaaclab.sim.utils.stage"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab.sim.utils.stage</span></code></a> (e.g. <code class="docutils literal notranslate"><span class="pre">get_current_stage</span></code>,
+<code class="docutils literal notranslate"><span class="pre">create_new_stage</span></code>, <code class="docutils literal notranslate"><span class="pre">open_stage</span></code>, <code class="docutils literal notranslate"><span class="pre">save_stage</span></code>, <code class="docutils literal notranslate"><span class="pre">close_stage</span></code>,
+<code class="docutils literal notranslate"><span class="pre">clear_stage</span></code>, <code class="docutils literal notranslate"><span class="pre">update_stage</span></code>, <code class="docutils literal notranslate"><span class="pre">use_stage</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.utils.prims</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.utils.html#module-isaaclab.sim.utils.prims" title="isaaclab.sim.utils.prims"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab.sim.utils.prims</span></code></a> (e.g. <code class="docutils literal notranslate"><span class="pre">create_prim</span></code>, <code class="docutils literal notranslate"><span class="pre">delete_prim</span></code>,
+<code class="docutils literal notranslate"><span class="pre">change_prim_property</span></code>, <code class="docutils literal notranslate"><span class="pre">bind_visual_material</span></code>,
+<code class="docutils literal notranslate"><span class="pre">bind_physics_material</span></code>, <code class="docutils literal notranslate"><span class="pre">add_usd_reference</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.utils.queries</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.utils.html#module-isaaclab.sim.utils.queries" title="isaaclab.sim.utils.queries"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab.sim.utils.queries</span></code></a> (e.g. <code class="docutils literal notranslate"><span class="pre">find_matching_prims</span></code>,
+<code class="docutils literal notranslate"><span class="pre">find_matching_prim_paths</span></code>, <code class="docutils literal notranslate"><span class="pre">get_first_matching_child_prim</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.utils.transforms</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.utils.html#module-isaaclab.sim.utils.transforms" title="isaaclab.sim.utils.transforms"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab.sim.utils.transforms</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.utils.semantics</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.utils.html#module-isaaclab.sim.utils.semantics" title="isaaclab.sim.utils.semantics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab.sim.utils.semantics</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.utils.extensions.enable_extension</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.experimental.utils.app.enable_extension</span></code> (no Isaac Lab equivalent)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.utils.viewports.set_camera_view</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.rendering_manager.ViewportManager.set_camera_view</span></code> (or
+<code class="docutils literal notranslate"><span class="pre">omni.kit.viewport.utility.camera_state.ViewportCameraState</span></code> for lower-level control)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.prims.XFormPrim</span></code> / <code class="docutils literal notranslate"><span class="pre">XFormPrimView</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.sim.views.html#isaaclab.sim.views.FrameView" title="isaaclab.sim.views.FrameView"><code class="xref py py-class docutils literal notranslate"><span class="pre">FrameView</span></code></a> (Isaac Lab in-tree view; see
+<a class="reference internal" href="#migrating-to-isaaclab-3-0"><span class="std std-ref">Migrating to Isaac Lab 3.0</span></a> <code class="docutils literal notranslate"><span class="pre">Renaming</span> <span class="pre">of</span> <span class="pre">XformPrimView</span> <span class="pre">to</span> <span class="pre">FrameView</span></code> above).
+For <code class="docutils literal notranslate"><span class="pre">Articulation</span></code> / <code class="docutils literal notranslate"><span class="pre">RigidPrim</span></code> use <code class="docutils literal notranslate"><span class="pre">isaacsim.core.experimental.prims</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.simulation_manager.SimulationManager</span></code></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">isaaclab_physx.physics.PhysxManager</span></code> (PhysX backend) or
+<code class="docutils literal notranslate"><span class="pre">isaaclab_newton.physics.NewtonManager</span></code> (Newton backend); see local-alias
+pattern below.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.core.cloner</span></code></p></td>
+<td><p><a class="reference internal" href="../api/lab/isaaclab.cloner.html#module-isaaclab.cloner" title="isaaclab.cloner"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab.cloner</span></code></a> (Isaac Lab in-tree cloner)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.replicator.mobility_gen</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.replicator.experimental.mobility_gen</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.&lt;name&gt;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.experimental.&lt;name&gt;</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.robot.wheeled_robots</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">isaacsim.robot.experimental.wheeled_robots</span></code> (and
+<code class="docutils literal notranslate"><span class="pre">isaacsim.robot.wheeled_robots.nodes</span></code> for OmniGraph nodes)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To keep call-site code symmetric across backends when migrating off
+<code class="docutils literal notranslate"><span class="pre">isaacsim.core.simulation_manager.SimulationManager</span></code>, use the local-alias pattern:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_physx.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">PhysxManager</span> <span class="k">as</span> <span class="n">SimulationManager</span>
+<span class="c1"># or, for the Newton backend</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab_newton.physics</span><span class="w"> </span><span class="kn">import</span> <span class="n">NewtonManager</span> <span class="k">as</span> <span class="n">SimulationManager</span>
+</pre></div>
+</div>
+</section>
+<section id="kit-experience-kit-updates">
+<h3>Kit experience (<code class="docutils literal notranslate"><span class="pre">.kit</span></code>) updates<a class="headerlink" href="#kit-experience-kit-updates" title="Link to this heading">#</a></h3>
+<p>If you maintain a custom Kit experience derived from one of the Isaac Lab apps under
+<code class="docutils literal notranslate"><span class="pre">apps/</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Stop registering deprecated extension search paths.</strong> The <code class="docutils literal notranslate"><span class="pre">extsDeprecated</span></code> search
+path entry has been removed from all stock Isaac Lab Kit experiences (headless,
+rendering, XR variants). Mirror that change in your own experience.</p></li>
+<li><p><strong>Switch explicit Isaac Sim extension dependencies</strong> to the non-deprecated equivalents
+listed above (<code class="docutils literal notranslate"><span class="pre">isaacsim.core.experimental.*</span></code>, <code class="docutils literal notranslate"><span class="pre">isaacsim.sensors.experimental.*</span></code>,
+<code class="docutils literal notranslate"><span class="pre">isaacsim.robot.experimental.wheeled_robots</span></code>).</p></li>
+<li><p><strong>Remove unused Isaac Sim extensions that pull in</strong> <code class="docutils literal notranslate"><span class="pre">isaacsim.core.api</span></code> — Isaac Lab
+no longer depends on those, and keeping them resurrects the deprecated stack.</p></li>
+</ul>
+</section>
+<section id="simulationmanager-is-no-longer-re-exported">
+<h3><code class="docutils literal notranslate"><span class="pre">SimulationManager</span></code> is no longer re-exported<a class="headerlink" href="#simulationmanager-is-no-longer-re-exported" title="Link to this heading">#</a></h3>
+<p>Earlier internal previews of this migration briefly exposed
+<code class="docutils literal notranslate"><span class="pre">isaaclab_physx.physics.SimulationManager</span></code> as a public alias of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PhysxManager</span></code>. <strong>That alias has been removed</strong>; use
+<code class="xref py py-class docutils literal notranslate"><span class="pre">PhysxManager</span></code> directly (with <code class="docutils literal notranslate"><span class="pre">as</span> <span class="pre">SimulationManager</span></code> at
+the import site if you want backend-agnostic call-site code, as shown above).</p>
+</section>
+<section id="retired-standalone-reproducers">
+<h3>Retired standalone reproducers<a class="headerlink" href="#retired-standalone-reproducers" title="Link to this heading">#</a></h3>
+<p>A handful of legacy reproducers under <code class="docutils literal notranslate"><span class="pre">source/isaaclab/test/deps/isaacsim</span></code> that
+depended on the deprecated Isaac Sim core extensions have been retired:
+<code class="docutils literal notranslate"><span class="pre">check_camera.py</span></code>, <code class="docutils literal notranslate"><span class="pre">check_floating_base_made_fixed.py</span></code>,
+<code class="docutils literal notranslate"><span class="pre">check_legged_robot_clone.py</span></code>, <code class="docutils literal notranslate"><span class="pre">check_rep_texture_randomizer.py</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">check_ref_count.py</span></code>. Use <a class="reference internal" href="../api/lab/isaaclab.sim.html#module-isaaclab.sim" title="isaaclab.sim"><code class="xref py py-mod docutils literal notranslate"><span class="pre">isaaclab.sim</span></code></a> together with the new
+<code class="docutils literal notranslate"><span class="pre">isaacsim.core.experimental.*</span></code> APIs for the same debugging workflows.</p>
+</section>
+</section>
+<section id="physx-tensors-api-module-path">
+<h2>PhysX Tensors API Module Path<a class="headerlink" href="#physx-tensors-api-module-path" title="Link to this heading">#</a></h2>
+<p>Recent Isaac Sim releases removed the internal <code class="docutils literal notranslate"><span class="pre">impl</span></code> submodule of
+<code class="docutils literal notranslate"><span class="pre">omni.physics.tensors</span></code> and now expose the PhysX Tensor API types
+(<code class="docutils literal notranslate"><span class="pre">ArticulationView</span></code>, <code class="docutils literal notranslate"><span class="pre">RigidBodyView</span></code>, <code class="docutils literal notranslate"><span class="pre">SimulationView</span></code>, etc.) directly
+under <code class="docutils literal notranslate"><span class="pre">omni.physics.tensors.api</span></code>. Importing from the old path raises
+<code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'omni.physics.tensors.impl'</span></code> at import
+time.</p>
+<p>Isaac Lab has been updated to import from the new path. Downstream code
+(custom assets, sensors, or scripts) that imported from the old path must be
+updated:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Before (Isaac Lab 2.x / older Isaac Sim)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">omni.physics.tensors.impl.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">physx</span>
+
+<span class="c1"># After (Isaac Lab 3.x / current Isaac Sim)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">omni.physics.tensors.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">physx</span>
+</pre></div>
+</div>
+<p>The class identities are unchanged — only the module path moved. Type hints
+referencing the old path (<code class="docutils literal notranslate"><span class="pre">omni.physics.tensors.impl.api.ArticulationView</span></code>)
+should be similarly updated to <code class="docutils literal notranslate"><span class="pre">omni.physics.tensors.api.ArticulationView</span></code>.</p>
+</section>
 <section id="need-help">
 <h2>Need Help?<a class="headerlink" href="#need-help" title="Link to this heading">#</a></h2>
 <p>If you encounter issues during migration:</p>
@@ -2373,6 +2797,7 @@ compatibility. These will be removed in a future release.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visualizer-cli-and-headless-behavior">Visualizer CLI and Headless Behavior</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-backend-architecture">Multi-Backend Architecture</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#new-isaaclab-physx-and-isaaclab-newton-extensions">New <code class="docutils literal notranslate"><span class="pre">isaaclab_physx</span></code> and <code class="docutils literal notranslate"><span class="pre">isaaclab_newton</span></code> Extensions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#renaming-of-xformprimview-to-frameview">Renaming of <code class="docutils literal notranslate"><span class="pre">XformPrimView</span></code> to <code class="docutils literal notranslate"><span class="pre">FrameView</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#unchanged-imports">Unchanged Imports</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-isaaclab-newton-extension">New <code class="docutils literal notranslate"><span class="pre">isaaclab_newton</span></code> Extension</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deformable-object-api-changes">Deformable Object API Changes</a></li>
@@ -2408,12 +2833,20 @@ compatibility. These will be removed in a future release.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices-for-migration">Best Practices for Migration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-runtime-quaternion-access-detector">Using the Runtime Quaternion Access Detector</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-changes">API Changes</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-convert-quat-function-has-been-removed">The <code class="docutils literal notranslate"><span class="pre">convert_quat</span></code> function has been removed</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#math-utility-functions-now-expect-xyzw">Math utility functions now expect XYZW</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#warp-backend-for-asset-and-sensor-data">Warp Backend for Asset and Sensor Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proxyarray-backend-for-asset-and-sensor-data">ProxyArray Backend for Asset and Sensor Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ray-caster-warp-backend">Ray Caster Warp Backend</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#raycasterdata-return-types">RayCasterData Return Types</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ray-alignment-configuration">Ray Alignment Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#raycasting-kernel-signature-change">Raycasting Kernel Signature Change</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#raycaster-meshes-cache-key">RayCaster.meshes Cache Key</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#write-method-index-mask-split">Write Method Index/Mask Split</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#timestampedbufferwarp">TimestampedBufferWarp</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#urdf-importer">URDF Importer</a><ul class="nav section-nav flex-column">
@@ -2437,6 +2870,15 @@ compatibility. These will be removed in a future release.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#backward-compatibility">Backward Compatibility</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proxyarray-interop-and-temporary-compatibility">ProxyArray Interop and Temporary Compatibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#migration-off-deprecated-isaac-sim-apis">Migration off Deprecated Isaac Sim APIs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-module-renames">Python module renames</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kit-experience-kit-updates">Kit experience (<code class="docutils literal notranslate"><span class="pre">.kit</span></code>) updates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simulationmanager-is-no-longer-re-exported"><code class="docutils literal notranslate"><span class="pre">SimulationManager</span></code> is no longer re-exported</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#retired-standalone-reproducers">Retired standalone reproducers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#physx-tensors-api-module-path">PhysX Tensors API Module Path</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#need-help">Need Help?</a></li>
 </ul>
   </nav></div>
@@ -2471,7 +2913,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

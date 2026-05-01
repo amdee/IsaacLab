@@ -63,7 +63,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -160,6 +160,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="isaaclab_teleop.html" selected>develop</option>
             <option value="../../../../main/index.html" >main</option>
+            <option value="../../../../v3.0.0-beta/source/api/lab_teleop/isaaclab_teleop.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -303,6 +304,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -361,7 +363,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -732,6 +734,7 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.sim_device"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.sim_device</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.teleoperation_active_default"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.teleoperation_active_default</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.retargeters_to_tune"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.retargeters_to_tune</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.control_channel_uuid"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.control_channel_uuid</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.target_frame_prim_path</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.app_name"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.app_name</span></code></a></li>
 </ul>
@@ -761,6 +764,7 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.__init__"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.__init__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.reset"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.reset()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.last_control_events"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.last_control_events</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.add_callback"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.add_callback()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.advance"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.advance()</span></code></a></li>
 </ul>
@@ -879,10 +883,13 @@ Both fields must be callables (lambdas / functions) so they survive the
 <tr class="row-even"><td><p><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg.retargeters_to_tune" title="isaaclab_teleop.IsaacTeleopCfg.retargeters_to_tune"><code class="xref py py-obj docutils literal notranslate"><span class="pre">retargeters_to_tune</span></code></a></p></td>
 <td><p>Optional callable returning retargeters to expose in the tuning UI.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path" title="isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target_frame_prim_path</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg.control_channel_uuid" title="isaaclab_teleop.IsaacTeleopCfg.control_channel_uuid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">control_channel_uuid</span></code></a></p></td>
+<td><p>16-byte UUID for the teleop control message channel.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path" title="isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path"><code class="xref py py-obj docutils literal notranslate"><span class="pre">target_frame_prim_path</span></code></a></p></td>
 <td><p>Optional USD prim path whose world frame becomes the target coordinate frame for all output poses.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg.app_name" title="isaaclab_teleop.IsaacTeleopCfg.app_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app_name</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg.app_name" title="isaaclab_teleop.IsaacTeleopCfg.app_name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">app_name</span></code></a></p></td>
 <td><p>Application name for the IsaacTeleop session.</p></td>
 </tr>
 </tbody>
@@ -927,7 +934,7 @@ from controller inputs.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="isaaclab_teleop.IsaacTeleopCfg.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xr_cfg:</span> <span class="pre">XrCfg</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_builder:</span> <span class="pre">Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">OutputCombiner]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins:</span> <span class="pre">list[PluginConfig]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_device:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">teleoperation_active_default:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retargeters_to_tune:</span> <span class="pre">Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list[BaseRetargeter]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_frame_prim_path:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopCfg.__init__" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xr_cfg:</span> <span class="pre">XrCfg</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pipeline_builder:</span> <span class="pre">Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">OutputCombiner]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plugins:</span> <span class="pre">list[PluginConfig]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_device:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">teleoperation_active_default:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">retargeters_to_tune:</span> <span class="pre">Callable[[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">list[BaseRetargeter]]</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_channel_uuid:</span> <span class="pre">bytes</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_frame_prim_path:</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_name:</span> <span class="pre">str</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopCfg.__init__" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -957,6 +964,23 @@ displayed in the <code class="docutils literal notranslate"><span class="pre">Mu
 real-time adjustment of their tunable parameters.  Only retargeters that
 have a <code class="docutils literal notranslate"><span class="pre">ParameterState</span></code> (i.e. tunable parameters) will appear.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the tuning UI will not be opened.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="isaaclab_teleop.IsaacTeleopCfg.control_channel_uuid">
+<span class="sig-name descname"><span class="pre">control_channel_uuid</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytes" title="(in Python v3.14)"><span class="pre">bytes</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></em><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopCfg.control_channel_uuid" title="Link to this definition">#</a></dt>
+<dd><p>16-byte UUID for the teleop control message channel.</p>
+<p>Defaults to <code class="xref py py-data docutils literal notranslate"><span class="pre">TELEOP_CONTROL_CHANNEL_UUID</span></code>
+(<code class="docutils literal notranslate"><span class="pre">uuid5(NAMESPACE_DNS,</span> <span class="pre">&quot;teleop_command&quot;)</span></code>), which is the well-known
+channel both the Isaac Lab server and CloudXR JS client use to
+exchange start/stop/reset commands.</p>
+<p>When set, a <code class="docutils literal notranslate"><span class="pre">teleop_control_pipeline</span></code> is created automatically
+using <code class="xref py py-class docutils literal notranslate"><span class="pre">TeleopMessageProcessor</span></code>
+and <code class="xref py py-class docutils literal notranslate"><span class="pre">DefaultTeleopStateManager</span></code>.
+The remote client sends UTF-8 control commands over the OpenXR opaque
+data channel identified by this UUID, and the results are exposed via
+<code class="xref py py-func docutils literal notranslate"><span class="pre">poll_control_events()</span></code>.</p>
+<p>Set to <code class="docutils literal notranslate"><span class="pre">None</span></code> to disable the control channel entirely.</p>
 </dd></dl>
 
 <dl class="py attribute">
@@ -1202,8 +1226,8 @@ and Isaac Lab environments.  It composes three focused collaborators:</p>
 and coordinate-frame transform computation.</p></li>
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">TeleopSessionLifecycle</span></code> – pipeline building, OpenXR handle
 acquisition, session creation/destruction, and action-tensor extraction.</p></li>
-<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">CommandHandler</span></code> – callback registration and XR message-bus
-command dispatch.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">CommandHandler</span></code> – callback registration for START / STOP / RESET
+commands, bridged from the pipeline-based control events.</p></li>
 </ul>
 <p>Together they manage:</p>
 <ol class="arabic simple">
@@ -1232,7 +1256,8 @@ the retargeting pipeline, so all resulting poses are expressed in the
 target frame.</p>
 </dd>
 <dt>Teleop commands:</dt><dd><p>The device supports callbacks for START, STOP, and RESET commands
-that can be triggered via XR controller buttons or the message bus.</p>
+that can be triggered via the message-channel control pipeline or
+registered directly via <a class="reference internal" href="#isaaclab_teleop.IsaacTeleopDevice.add_callback" title="isaaclab_teleop.IsaacTeleopDevice.add_callback"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_callback()</span></code></a>.</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
@@ -1280,6 +1305,15 @@ that can be triggered via XR controller buttons or the message bus.</p>
 </tbody>
 </table>
 </div>
+<p><strong>Attributes:</strong></p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopDevice.last_control_events" title="isaaclab_teleop.IsaacTeleopDevice.last_control_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">last_control_events</span></code></a></p></td>
+<td><p>Control events from the most recent <a class="reference internal" href="#isaaclab_teleop.IsaacTeleopDevice.advance" title="isaaclab_teleop.IsaacTeleopDevice.advance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance()</span></code></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="isaaclab_teleop.IsaacTeleopDevice.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg" title="isaaclab_teleop.isaac_teleop_cfg.IsaacTeleopCfg"><span class="pre">IsaacTeleopCfg</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">cloudxr_env_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_launch_cloudxr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/isaaclab_teleop/isaac_teleop_device.html#IsaacTeleopDevice.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopDevice.__init__" title="Link to this definition">#</a></dt>
@@ -1304,7 +1338,19 @@ when <em>cloudxr_env_file</em> is set.  Ignored when
 <dt class="sig sig-object py" id="isaaclab_teleop.IsaacTeleopDevice.reset">
 <span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/isaaclab_teleop/isaac_teleop_device.html#IsaacTeleopDevice.reset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopDevice.reset" title="Link to this definition">#</a></dt>
 <dd><p>Reset the device state.</p>
-<p>Resets the XR anchor synchronizer if present.</p>
+<p>Resets the XR anchor synchronizer and schedules a
+<code class="docutils literal notranslate"><span class="pre">reset</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">ExecutionEvents</span></code>
+for the next pipeline step so that all retargeters reinitialize
+their cross-step state.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="isaaclab_teleop.IsaacTeleopDevice.last_control_events">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last_control_events</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">ControlEvents</span></em><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopDevice.last_control_events" title="Link to this definition">#</a></dt>
+<dd><p>Control events from the most recent <a class="reference internal" href="#isaaclab_teleop.IsaacTeleopDevice.advance" title="isaaclab_teleop.IsaacTeleopDevice.advance"><code class="xref py py-meth docutils literal notranslate"><span class="pre">advance()</span></code></a>.</p>
+<p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">ControlEvents</span></code> derived from the teleop control
+pipeline.  When no control channel is configured, returns a
+default (no-op) <code class="xref py py-class docutils literal notranslate"><span class="pre">ControlEvents</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1323,7 +1369,7 @@ when <em>cloudxr_env_file</em> is set.  Ignored when
 
 <dl class="py method">
 <dt class="sig sig-object py" id="isaaclab_teleop.IsaacTeleopDevice.advance">
-<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_T_world</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SupportsDLPack</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/isaaclab_teleop/isaac_teleop_device.html#IsaacTeleopDevice.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopDevice.advance" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">advance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_T_world</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">np.ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/2.11/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SupportsDLPack</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/2.11/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/isaaclab_teleop/isaac_teleop_device.html#IsaacTeleopDevice.advance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab_teleop.IsaacTeleopDevice.advance" title="Link to this definition">#</a></dt>
 <dd><p>Process current device state and return control commands.</p>
 <p>If the IsaacTeleop session has not been started yet (because the OpenXR
 handles were not available at <code class="docutils literal notranslate"><span class="pre">__enter__</span></code> time), this method will
@@ -1342,7 +1388,7 @@ controller receives end-effector poses in the robot’s base
 link frame.</p>
 <p>Accepts any object supporting the DLPack buffer protocol
 (<code class="docutils literal notranslate"><span class="pre">__dlpack__</span></code>), including <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v2.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>,
-<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>, and <code class="docutils literal notranslate"><span class="pre">wp.array</span></code>.</p>
+<a class="reference external" href="https://docs.pytorch.org/docs/2.11/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a>, and <code class="docutils literal notranslate"><span class="pre">wp.array</span></code>.</p>
 <p>When <code class="docutils literal notranslate"><span class="pre">None</span></code> and
 <a class="reference internal" href="#isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path" title="isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">target_frame_prim_path</span></code></a> is set, the
 transform is computed automatically by reading the prim’s
@@ -1350,7 +1396,7 @@ world matrix from Fabric and inverting it.</p>
 </p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A flattened action <a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> ready for the Isaac Lab
+<dd class="field-even"><p>A flattened action <a class="reference external" href="https://docs.pytorch.org/docs/2.11/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code></a> ready for the Isaac Lab
 environment, or <code class="docutils literal notranslate"><span class="pre">None</span></code> if the session has not started yet
 (e.g. still waiting for the user to start AR).</p>
 </dd>
@@ -1543,6 +1589,7 @@ observation terms that reference these cameras.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.sim_device"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.sim_device</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.teleoperation_active_default"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.teleoperation_active_default</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.retargeters_to_tune"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.retargeters_to_tune</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.control_channel_uuid"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.control_channel_uuid</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.target_frame_prim_path"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.target_frame_prim_path</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopCfg.app_name"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopCfg.app_name</span></code></a></li>
 </ul>
@@ -1572,6 +1619,7 @@ observation terms that reference these cameras.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.__init__"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.__init__()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.reset"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.reset()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.last_control_events"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.last_control_events</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.add_callback"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.add_callback()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#isaaclab_teleop.IsaacTeleopDevice.advance"><code class="docutils literal notranslate"><span class="pre">IsaacTeleopDevice.advance()</span></code></a></li>
 </ul>
@@ -1622,7 +1670,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

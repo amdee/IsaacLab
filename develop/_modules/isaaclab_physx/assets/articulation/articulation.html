@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="articulation.html" selected>develop</option>
             <option value="../../../../../main/index.html" >main</option>
+            <option value="../../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -697,7 +699,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.articulation_data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArticulationData</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">omni.physics.tensors.impl.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">physx</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">omni.physics.tensors.api</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">physx</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab.assets.articulation.articulation_cfg</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArticulationCfg</span>
 
@@ -909,30 +911,22 @@
         <span class="c1"># write external wrench</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">active</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">active</span><span class="p">:</span>
-                <span class="c1"># Compose instantaneous wrench with permanent wrench</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">add_forces_and_torques_index</span><span class="p">(</span>
-                    <span class="n">forces</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_force</span><span class="p">,</span>
-                    <span class="n">torques</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_torque</span><span class="p">,</span>
-                    <span class="n">body_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_BODY_INDICES</span><span class="p">,</span>
-                    <span class="n">env_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="c1"># Apply both instantaneous and permanent wrench to the simulation</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">apply_forces_and_torques_at_position</span><span class="p">(</span>
-                    <span class="n">force_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">composed_force</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">torque_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">composed_torque</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">position_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span><span class="p">,</span>
-                    <span class="n">is_global</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">composer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span>
+                <span class="n">composer</span><span class="o">.</span><span class="n">add_raw_buffers_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="p">)</span>
+                <span class="n">get_force_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_inst_wrench_force_f32</span>
+                <span class="n">get_torque_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_inst_wrench_torque_f32</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># Apply permanent wrench to the simulation</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">apply_forces_and_torques_at_position</span><span class="p">(</span>
-                    <span class="n">force_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_force</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">torque_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">composed_torque</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
-                    <span class="n">position_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span><span class="p">,</span>
-                    <span class="n">is_global</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                <span class="p">)</span>
+                <span class="n">composer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span>
+                <span class="n">get_force_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_perm_wrench_force_f32</span>
+                <span class="n">get_torque_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_perm_wrench_torque_f32</span>
+            <span class="n">composer</span><span class="o">.</span><span class="n">compose_to_body_frame</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">apply_forces_and_torques_at_position</span><span class="p">(</span>
+                <span class="n">force_data</span><span class="o">=</span><span class="n">get_force_data</span><span class="p">(),</span>
+                <span class="n">torque_data</span><span class="o">=</span><span class="n">get_torque_data</span><span class="p">(),</span>
+                <span class="n">position_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">indices</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span><span class="p">,</span>
+                <span class="n">is_global</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
         <span class="c1"># apply actuator models</span>
@@ -1072,7 +1066,7 @@
 <span class="sd">        The root pose comprises of the cartesian position and quaternion orientation in (x, y, z, w).</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data.</span>
+<span class="sd">            This method expects partial data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1099,7 +1093,7 @@
 <span class="sd">        The root pose comprises of the cartesian position and quaternion orientation in (x, y, z, w).</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1127,7 +1121,7 @@
 <span class="sd">        The root pose comprises of the cartesian position and quaternion orientation in (x, y, z, w).</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data or full data.</span>
+<span class="sd">            This method expects partial data or full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1156,8 +1150,6 @@
             <span class="p">],</span>
             <span class="n">outputs</span><span class="o">=</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_link_pose_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_link_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1171,7 +1163,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_link_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="c1"># set into simulation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_transforms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_link_pose_w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_transforms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_root_link_pose_w_f32</span><span class="p">(),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_root_link_pose_to_sim_mask">
@@ -1187,7 +1179,7 @@
 <span class="sd">        The root pose comprises of the cartesian position and quaternion orientation in (x, y, z, w).</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1219,7 +1211,7 @@
 <span class="sd">        The orientation is the orientation of the principal axes of inertia.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data or full data.</span>
+<span class="sd">            This method expects partial data or full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1252,9 +1244,6 @@
             <span class="n">outputs</span><span class="o">=</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_com_pose_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_link_pose_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_com_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_link_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1269,7 +1258,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_link_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="c1"># set into simulation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_transforms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_link_pose_w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_transforms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_root_link_pose_w_f32</span><span class="p">(),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_root_com_pose_to_sim_mask">
@@ -1286,7 +1275,7 @@
 <span class="sd">        The orientation is the orientation of the principal axes of inertia.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1319,7 +1308,7 @@
 <span class="sd">            This sets the velocity of the root&#39;s center of mass rather than the root&#39;s frame.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data.</span>
+<span class="sd">            This method expects partial data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1349,7 +1338,7 @@
 <span class="sd">            This sets the velocity of the root&#39;s center of mass rather than the root&#39;s frame.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1380,7 +1369,7 @@
 <span class="sd">            This sets the velocity of the root&#39;s center of mass rather than the root&#39;s frame.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data or full data.</span>
+<span class="sd">            This method expects partial data or full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1411,8 +1400,6 @@
             <span class="n">outputs</span><span class="o">=</span><span class="p">[</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_com_vel_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_com_acc_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_com_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1420,7 +1407,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_com_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="c1"># set into simulation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_velocities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_com_vel_w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_velocities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_root_com_vel_w_f32</span><span class="p">(),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_root_com_velocity_to_sim_mask">
@@ -1439,7 +1426,7 @@
 <span class="sd">            This sets the velocity of the root&#39;s center of mass rather than the root&#39;s frame.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1473,7 +1460,7 @@
 <span class="sd">            This sets the velocity of the root&#39;s frame rather than the root&#39;s center of mass.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data or full data.</span>
+<span class="sd">            This method expects partial data or full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1508,9 +1495,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_link_vel_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">root_com_vel_w</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">body_com_acc_w</span><span class="p">,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_link_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_state_w.data,</span>
-                <span class="kc">None</span><span class="p">,</span>  <span class="c1"># self.data._root_com_state_w.data,</span>
             <span class="p">],</span>
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
@@ -1519,7 +1503,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_com_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
         <span class="c1"># set into simulation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_velocities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_link_vel_w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_root_velocities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_root_link_vel_w_f32</span><span class="p">(),</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_root_link_velocity_to_sim_mask">
@@ -1538,7 +1522,7 @@
 <span class="sd">            This sets the velocity of the root&#39;s frame rather than the root&#39;s center of mass.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1555,6 +1539,74 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">write_root_link_velocity_to_sim_index</span><span class="p">(</span><span class="n">root_velocity</span><span class="o">=</span><span class="n">root_velocity</span><span class="p">,</span> <span class="n">env_ids</span><span class="o">=</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">full_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Articulation.write_joint_state_to_sim_index">
+<a class="viewcode-back" href="../../../../source/api/lab_physx/isaaclab_physx.assets.html#isaaclab_physx.assets.Articulation.write_joint_state_to_sim_index">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_joint_state_to_sim_index</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">position</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">velocity</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">,</span>
+        <span class="n">joint_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">env_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">full_data</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint positions and velocities in a single fused kernel launch.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This method expects partial data or full data.</span>
+
+<span class="sd">        .. tip::</span>
+<span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
+<span class="sd">            is only supporting indexing, hence masks need to be converted to indices.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            position: Joint positions. Shape is (len(env_ids), len(joint_ids)) or (num_instances, num_joints).</span>
+<span class="sd">            velocity: Joint velocities. Shape is (len(env_ids), len(joint_ids)) or (num_instances, num_joints).</span>
+<span class="sd">            joint_ids: Joint indices. If None, then all joints are used.</span>
+<span class="sd">            env_ids: Environment indices. If None, then all indices are used.</span>
+<span class="sd">            full_data: Whether to expect full data. Defaults to False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># resolve all indices</span>
+        <span class="n">env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
+        <span class="n">joint_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_joint_ids</span><span class="p">(</span><span class="n">joint_ids</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">full_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_shape_and_dtype</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_instances</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_joints</span><span class="p">),</span> <span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_shape_and_dtype</span><span class="p">(</span><span class="n">velocity</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_instances</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_joints</span><span class="p">),</span> <span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_shape_and_dtype</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="p">(</span><span class="n">env_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">joint_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assert_shape_and_dtype</span><span class="p">(</span><span class="n">velocity</span><span class="p">,</span> <span class="p">(</span><span class="n">env_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">joint_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s2">&quot;velocity&quot;</span><span class="p">)</span>
+        <span class="n">wp</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span>
+            <span class="n">articulation_kernels</span><span class="o">.</span><span class="n">write_joint_state_data</span><span class="p">,</span>
+            <span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="n">env_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">joint_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="n">inputs</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">position</span><span class="p">,</span>
+                <span class="n">velocity</span><span class="p">,</span>
+                <span class="n">env_ids</span><span class="p">,</span>
+                <span class="n">joint_ids</span><span class="p">,</span>
+                <span class="n">full_data</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_vel</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_previous_joint_vel</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_acc</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># Invalidate buffers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_vel_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_link_vel_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_pose_b</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_pose_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_link_pose_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_link_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_state_w</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+        <span class="c1"># set into simulation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_positions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_pos</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_velocities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_vel</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Articulation.write_joint_state_to_sim_mask">
 <a class="viewcode-back" href="../../../../source/api/lab_physx/isaaclab_physx.assets.html#isaaclab_physx.assets.Articulation.write_joint_state_to_sim_mask">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">write_joint_state_to_sim_mask</span><span class="p">(</span>
@@ -1568,7 +1620,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint positions and velocities over selected environment mask into the simulation.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1580,9 +1632,12 @@
 <span class="sd">            joint_mask: Joint mask. If None, then all joints are used.</span>
 <span class="sd">            env_mask: Environment mask. If None, then all the instances are updated. Shape is (num_instances,).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># set into simulation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_joint_position_to_sim_mask</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">env_mask</span><span class="o">=</span><span class="n">env_mask</span><span class="p">,</span> <span class="n">joint_mask</span><span class="o">=</span><span class="n">joint_mask</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_joint_velocity_to_sim_mask</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">env_mask</span><span class="o">=</span><span class="n">env_mask</span><span class="p">,</span> <span class="n">joint_mask</span><span class="o">=</span><span class="n">joint_mask</span><span class="p">)</span></div>
+        <span class="c1"># resolve masks to indices (PhysX only supports index-based TensorAPI)</span>
+        <span class="n">env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_env_mask</span><span class="p">(</span><span class="n">env_mask</span><span class="p">)</span>
+        <span class="n">joint_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_joint_mask</span><span class="p">(</span><span class="n">joint_mask</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_joint_state_to_sim_index</span><span class="p">(</span>
+            <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">joint_ids</span><span class="o">=</span><span class="n">joint_ids</span><span class="p">,</span> <span class="n">env_ids</span><span class="o">=</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">full_data</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_position_to_sim_index">
@@ -1598,7 +1653,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint positions over selected environment indices into the simulation.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data or full data.</span>
+<span class="sd">            This method expects partial data or full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1658,7 +1713,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint positions over selected environment mask into the simulation.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1689,7 +1744,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint velocities to the simulation.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data or full data.</span>
+<span class="sd">            This method expects partial data or full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1741,7 +1796,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint velocities over selected environment mask into the simulation.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1776,7 +1831,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint stiffness over selected environment indices into the simulation.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect partial data or full data.</span>
+<span class="sd">            This method expects partial data or full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1827,7 +1882,8 @@
             <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_stiffnesses</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_stiffness</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_stiffness</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_stiffness</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_stiffnesses</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_stiffness</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_stiffness_to_sim_mask">
@@ -1842,7 +1898,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Write joint stiffness over selected environment mask into the simulation.</span>
 
 <span class="sd">        .. note::</span>
-<span class="sd">            This method expect full data.</span>
+<span class="sd">            This method expects full data.</span>
 
 <span class="sd">        .. tip::</span>
 <span class="sd">            For maximum performance we recommend using the index method. This is because in PhysX, the tensor API</span>
@@ -1927,7 +1983,8 @@
             <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_dampings</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_damping</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_damping</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_damping</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_dampings</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_damping</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_damping_to_sim_mask">
@@ -2033,7 +2090,8 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">violation_message</span><span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_limits</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_pos_limits</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_pos_limits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_pos_limits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_limits</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_pos_limits</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_position_limit_to_sim_mask">
@@ -2143,7 +2201,8 @@
             <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_max_velocities</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_vel_limits</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_vel_limits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_vel_limits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_max_velocities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_vel_limits</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_velocity_limit_to_sim_mask">
@@ -2250,7 +2309,8 @@
             <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_max_forces</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_effort_limits</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_effort_limits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_effort_limits</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_max_forces</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_effort_limits</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_effort_limit_to_sim_mask">
@@ -2355,7 +2415,8 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
             <span class="n">env_ids</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_armatures</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_armature</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_armature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_joint_armature</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_armatures</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_armature</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_armature_to_sim_mask">
@@ -2500,7 +2561,8 @@
         <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_friction_properties</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">friction_props</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_friction_props</span><span class="p">,</span> <span class="n">friction_props</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_friction_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_friction_props</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_friction_coefficient_to_sim_mask">
@@ -2623,7 +2685,8 @@
         <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_friction_properties</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">friction_props</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_friction_props</span><span class="p">,</span> <span class="n">friction_props</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_friction_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_friction_props</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_dynamic_friction_coefficient_to_sim_mask">
@@ -2729,7 +2792,8 @@
         <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_friction_properties</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">friction_props</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_friction_props</span><span class="p">,</span> <span class="n">friction_props</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_dof_friction_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_friction_props</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.write_joint_viscous_friction_coefficient_to_sim_mask">
@@ -2822,7 +2886,8 @@
 
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_masses</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_mass</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_mass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_mass</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_masses</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_mass</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.set_masses_mask">
@@ -2907,12 +2972,11 @@
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="c1"># Convert from wp.transformf to flat (N, M, 7) array for PhysX</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="n">body_com_flat</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_pose_b</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_instances</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_bodies</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_coms</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_com_pose_b</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">num_instances</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_bodies</span><span class="p">,</span> <span class="mi">7</span><span class="p">)),</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_coms</span><span class="p">(</span><span class="n">body_com_flat</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_coms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_coms</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.set_coms_mask">
@@ -2996,7 +3060,8 @@
         <span class="p">)</span>
         <span class="c1"># Set into simulation, note that when updating &quot;model&quot; properties with PhysX we need to do it on CPU.</span>
         <span class="n">cpu_env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_cpu_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_inertias</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_inertia</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">),</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_inertia</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_body_inertia</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_inertias</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_inertia</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">cpu_env_ids</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Articulation.set_inertias_mask">
@@ -3955,12 +4020,12 @@
         <span class="n">env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_env_ids</span><span class="p">(</span><span class="n">env_ids</span><span class="p">)</span>
         <span class="c1"># Write fixed tendon properties to the simulation.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_fixed_tendon_properties</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_stiffness</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_damping</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_limit_stiffness</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_pos_limits</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_rest_length</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_offset</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_stiffness</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_damping</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_limit_stiffness</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_pos_limits</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_rest_length</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_offset</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
             <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -4442,10 +4507,10 @@
             <span class="n">env_ids</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="c1"># Write spatial tendon properties to the simulation.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">set_spatial_tendon_properties</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_stiffness</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_damping</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_limit_stiffness</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_offset</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_stiffness</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_damping</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_limit_stiffness</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_offset</span><span class="o">.</span><span class="n">warp</span><span class="p">,</span>
             <span class="n">indices</span><span class="o">=</span><span class="n">env_ids</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -4581,6 +4646,35 @@
             <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">)</span>
 
+        <span class="c1"># Cached .view(wp.float32) wrappers for structured warp arrays.</span>
+        <span class="c1"># These avoid per-call wp.array metadata allocation in writers.</span>
+        <span class="c1"># Reset to None each time _create_buffers runs (during initialization).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_pose_w_f32</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_com_vel_w_f32</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_vel_w_f32</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># Cached wrench views for write_data_to_sim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_force_f32</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_torque_f32</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_force_f32</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_torque_f32</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Pre-allocated pinned CPU buffers for PhysX TensorAPI writes.</span>
+        <span class="c1"># PhysX requires CPU arrays for &quot;model&quot; property updates (stiffness, damping, etc.).</span>
+        <span class="c1"># Pinned memory enables DMA fast path and avoids per-call malloc.</span>
+        <span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_instances</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_joints</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_bodies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_env_ids_all</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">wp</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cpu_env_ids_all</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_stiffness</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_damping</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_pos_limits</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_vel_limits</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_effort_limits</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_armature</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_joint_friction_props</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">J</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_mass</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">B</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_coms</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_body_inertia</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">,</span> <span class="n">pinned</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_process_cfg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Post processing of configuration parameters.&quot;&quot;&quot;</span>
         <span class="c1"># default state</span>
@@ -4669,14 +4763,14 @@
                 <span class="n">joint_ids</span><span class="o">=</span><span class="n">joint_ids</span><span class="p">,</span>
                 <span class="n">num_envs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_instances</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-                <span class="n">stiffness</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_stiffness</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
-                <span class="n">damping</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_damping</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
-                <span class="n">armature</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_armature</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
-                <span class="n">friction</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_friction_coeff</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
-                <span class="n">dynamic_friction</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_dynamic_friction_coeff</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
-                <span class="n">viscous_friction</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_viscous_friction_coeff</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
-                <span class="n">effort_limit</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_effort_limits</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
-                <span class="n">velocity_limit</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_vel_limits</span><span class="p">)[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
+                <span class="n">stiffness</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_stiffness</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
+                <span class="n">damping</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_damping</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
+                <span class="n">armature</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_armature</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
+                <span class="n">friction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_friction_coeff</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
+                <span class="n">dynamic_friction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_dynamic_friction_coeff</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
+                <span class="n">viscous_friction</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_viscous_friction_coeff</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
+                <span class="n">effort_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_effort_limits</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span>
+                <span class="n">velocity_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_vel_limits</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">joint_ids</span><span class="p">],</span>
             <span class="p">)</span>
             <span class="c1"># store actuator group</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">actuators</span><span class="p">[</span><span class="n">actuator_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">actuator</span>
@@ -4858,16 +4952,16 @@
             <span class="c1"># prepare input for actuator model based on cached data</span>
             <span class="c1"># TODO : A tensor dict would be nice to do the indexing of all tensors together</span>
             <span class="n">control_action</span> <span class="o">=</span> <span class="n">ArticulationActions</span><span class="p">(</span>
-                <span class="n">joint_positions</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_pos_target</span><span class="p">)[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
-                <span class="n">joint_velocities</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_vel_target</span><span class="p">)[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
-                <span class="n">joint_efforts</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_effort_target</span><span class="p">)[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
+                <span class="n">joint_positions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_pos_target</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
+                <span class="n">joint_velocities</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_vel_target</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
+                <span class="n">joint_efforts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_effort_target</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
                 <span class="n">joint_indices</span><span class="o">=</span><span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="c1"># compute joint command from the actuator model</span>
             <span class="n">control_action</span> <span class="o">=</span> <span class="n">actuator</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span>
                 <span class="n">control_action</span><span class="p">,</span>
-                <span class="n">joint_pos</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_pos</span><span class="p">)[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
-                <span class="n">joint_vel</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_vel</span><span class="p">)[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
+                <span class="n">joint_pos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_pos</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
+                <span class="n">joint_vel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">joint_vel</span><span class="o">.</span><span class="n">torch</span><span class="p">[:,</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span><span class="p">],</span>
             <span class="p">)</span>
             <span class="c1"># update targets (these are set into the simulation)</span>
             <span class="n">joint_indices</span> <span class="o">=</span> <span class="n">actuator</span><span class="o">.</span><span class="n">joint_indices</span>
@@ -4927,8 +5021,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># check that the default values are within the limits</span>
         <span class="n">joint_pos_limits</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">get_dof_limits</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">out_of_range</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_pos</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">joint_pos_limits</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">out_of_range</span> <span class="o">|=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_pos</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">joint_pos_limits</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">out_of_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_pos</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">joint_pos_limits</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">out_of_range</span> <span class="o">|=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_pos</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">joint_pos_limits</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
         <span class="n">violated_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">out_of_range</span><span class="p">,</span> <span class="n">as_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="c1"># throw error if any of the default joint positions are out of the limits</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">violated_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -4937,14 +5031,14 @@
             <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">violated_indices</span><span class="p">:</span>
                 <span class="n">joint_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
                 <span class="n">joint_limit</span> <span class="o">=</span> <span class="n">joint_pos_limits</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
-                <span class="n">joint_pos</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_pos</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span>
+                <span class="n">joint_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_pos</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span>
                 <span class="c1"># add to message</span>
                 <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">- &#39;</span><span class="si">{</span><span class="n">joint_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">joint_pos</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> not in [</span><span class="si">{</span><span class="n">joint_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">joint_limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
         <span class="c1"># check that the default joint velocities are within the limits</span>
         <span class="n">joint_max_vel</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_view</span><span class="o">.</span><span class="n">get_dof_max_velocities</span><span class="p">(),</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">out_of_range</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_vel</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">joint_max_vel</span>
+        <span class="n">out_of_range</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_vel</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">joint_max_vel</span>
         <span class="n">violated_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">out_of_range</span><span class="p">,</span> <span class="n">as_tuple</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">violated_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># prepare message for violated joints</span>
@@ -4952,7 +5046,7 @@
             <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">violated_indices</span><span class="p">:</span>
                 <span class="n">joint_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_names</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
                 <span class="n">joint_limit</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="n">joint_max_vel</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">joint_max_vel</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span>
-                <span class="n">joint_vel</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_vel</span><span class="p">)[</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span>
+                <span class="n">joint_vel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">default_joint_vel</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">]</span>
                 <span class="c1"># add to message</span>
                 <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">- &#39;</span><span class="si">{</span><span class="n">joint_name</span><span class="si">}</span><span class="s2">&#39;: </span><span class="si">{</span><span class="n">joint_vel</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> not in [</span><span class="si">{</span><span class="n">joint_limit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">joint_limit</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">]</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
@@ -4983,23 +5077,23 @@
         <span class="c1"># -- gains</span>
         <span class="c1"># Use data properties which have already been cloned and stored during initialization</span>
         <span class="c1"># This avoids issues with indexedarray or empty arrays from root_view</span>
-        <span class="n">stiffnesses</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_stiffness</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="n">dampings</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_damping</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">stiffnesses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_stiffness</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">dampings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_damping</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="c1"># -- properties</span>
-        <span class="n">armatures</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_armature</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">armatures</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_armature</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="c1"># For friction, use the individual components from data</span>
-        <span class="n">friction_coeff</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_friction_coeff</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-        <span class="n">dynamic_friction_coeff</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_dynamic_friction_coeff</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-        <span class="n">viscous_friction_coeff</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_viscous_friction_coeff</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+        <span class="n">friction_coeff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_friction_coeff</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+        <span class="n">dynamic_friction_coeff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_dynamic_friction_coeff</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+        <span class="n">viscous_friction_coeff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_viscous_friction_coeff</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
         <span class="n">static_frictions</span> <span class="o">=</span> <span class="n">friction_coeff</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="n">dynamic_frictions</span> <span class="o">=</span> <span class="n">dynamic_friction_coeff</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="n">viscous_frictions</span> <span class="o">=</span> <span class="n">viscous_friction_coeff</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="c1"># -- limits</span>
         <span class="c1"># joint_pos_limits is vec2f array, convert to torch and extract [lower, upper] pairs</span>
-        <span class="n">position_limits_torch</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos_limits</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>  <span class="c1"># shape: (num_joints, 2)</span>
+        <span class="n">position_limits_torch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_pos_limits</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>  <span class="c1"># shape: (num_joints, 2)</span>
         <span class="n">position_limits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">pos_limit</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">pos_limit</span> <span class="ow">in</span> <span class="n">position_limits_torch</span><span class="p">]</span>
-        <span class="n">velocity_limits</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_vel_limits</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="n">effort_limits</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_effort_limits</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">velocity_limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_vel_limits</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">effort_limits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">joint_effort_limits</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="c1"># create table for term information</span>
         <span class="n">joint_table</span> <span class="o">=</span> <span class="n">PrettyTable</span><span class="p">()</span>
         <span class="n">joint_table</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Simulation Joint Information (Prim path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">)&quot;</span>
@@ -5040,15 +5134,15 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_fixed_tendons</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># -- gains</span>
             <span class="c1"># Use data properties which have already been cloned and stored during initialization</span>
-            <span class="n">ft_stiffnesses</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_stiffness</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-            <span class="n">ft_dampings</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_damping</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">ft_stiffnesses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_stiffness</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">ft_dampings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_damping</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="c1"># -- limits</span>
-            <span class="n">ft_limit_stiffnesses</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_limit_stiffness</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">ft_limit_stiffnesses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_limit_stiffness</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="c1"># fixed_tendon_pos_limits is vec2f array</span>
-            <span class="n">ft_limits_torch</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_pos_limits</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+            <span class="n">ft_limits_torch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_pos_limits</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
             <span class="n">ft_limits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">limit</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">limit</span> <span class="ow">in</span> <span class="n">ft_limits_torch</span><span class="p">]</span>
-            <span class="n">ft_rest_lengths</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_rest_length</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-            <span class="n">ft_offsets</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_offset</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">ft_rest_lengths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_rest_length</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">ft_offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fixed_tendon_offset</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="c1"># create table for term information</span>
             <span class="n">tendon_table</span> <span class="o">=</span> <span class="n">PrettyTable</span><span class="p">()</span>
             <span class="n">tendon_table</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Simulation Fixed Tendon Information (Prim path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">)&quot;</span>
@@ -5092,11 +5186,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_spatial_tendons</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># -- gains</span>
             <span class="c1"># Use data properties which have already been cloned and stored during initialization</span>
-            <span class="n">st_stiffnesses</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_stiffness</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-            <span class="n">st_dampings</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_damping</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">st_stiffnesses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_stiffness</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">st_dampings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_damping</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="c1"># -- limits</span>
-            <span class="n">st_limit_stiffnesses</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_limit_stiffness</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-            <span class="n">st_offsets</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">to_torch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_offset</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">st_limit_stiffnesses</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_limit_stiffness</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">st_offsets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">spatial_tendon_offset</span><span class="o">.</span><span class="n">torch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="c1"># create table for term information</span>
             <span class="n">tendon_table</span> <span class="o">=</span> <span class="n">PrettyTable</span><span class="p">()</span>
             <span class="n">tendon_table</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Simulation Spatial Tendon Information (Prim path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">prim_path</span><span class="si">}</span><span class="s2">)&quot;</span>
@@ -5125,17 +5219,23 @@
             <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_cpu_env_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_ids</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get the CPU environment indices.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the CPU environment indices.</span>
+
+<span class="sd">        For the full-index case (all environments), returns the pre-allocated</span>
+<span class="sd">        pinned CPU buffer. For partial indices (e.g. during partial resets), clones to CPU.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            env_ids: Environment indices.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            A warp array of environment indices.</span>
+<span class="sd">            A warp array of environment indices on CPU.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
             <span class="n">env_ids</span> <span class="o">=</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="c1"># Fast path: if these are all indices, use pre-allocated pinned buffer</span>
+        <span class="k">if</span> <span class="n">env_ids</span><span class="o">.</span><span class="n">ptr</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span><span class="o">.</span><span class="n">ptr</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cpu_env_ids_all</span>
+        <span class="c1"># Slow path: partial indices (reset), clone to CPU</span>
         <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_env_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_mask</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
@@ -5157,11 +5257,54 @@
             <span class="n">env_ids</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span>
         <span class="k">return</span> <span class="n">env_ids</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_root_link_pose_w_f32</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a cached float32 view of root_link_pose_w for PhysX TensorAPI. Invalidated in ``_create_buffers``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_pose_w_f32</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_pose_w_f32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_link_pose_w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_pose_w_f32</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_root_com_vel_w_f32</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a cached float32 view of root_com_vel_w for PhysX TensorAPI. Invalidated in ``_create_buffers``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_com_vel_w_f32</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root_com_vel_w_f32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_com_vel_w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_com_vel_w_f32</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_root_link_vel_w_f32</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a cached float32 view of root_link_vel_w for PhysX TensorAPI. Invalidated in ``_create_buffers``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_vel_w_f32</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_vel_w_f32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">_root_link_vel_w</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root_link_vel_w_f32</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_inst_wrench_force_f32</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a cached flattened float32 view of instantaneous wrench force. Invalidated in ``_create_buffers``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_force_f32</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_force_f32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">out_force_b</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+                <span class="n">wp</span><span class="o">.</span><span class="n">float32</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_force_f32</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_inst_wrench_torque_f32</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a cached flattened float32 view of instantaneous wrench torque. Invalidated in ``_create_buffers``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_torque_f32</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_torque_f32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instantaneous_wrench_composer</span><span class="o">.</span><span class="n">out_torque_b</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span>
+                <span class="n">wp</span><span class="o">.</span><span class="n">float32</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inst_wrench_torque_f32</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_perm_wrench_force_f32</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a cached flattened float32 view of permanent wrench force. Invalidated in ``_create_buffers``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_force_f32</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_force_f32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">out_force_b</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_force_f32</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_perm_wrench_torque_f32</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a cached flattened float32 view of permanent wrench torque. Invalidated in ``_create_buffers``.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_torque_f32</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_torque_f32</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permanent_wrench_composer</span><span class="o">.</span><span class="n">out_torque_b</span><span class="o">.</span><span class="n">warp</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_perm_wrench_torque_f32</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_env_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve environment indices to a warp array.</span>
-
-<span class="sd">        .. note::</span>
-<span class="sd">            We need to convert torch tensors to warp arrays since the TensorAPI views only support warp arrays.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            env_ids: Environment indices. If None, then all indices are used.</span>
@@ -5172,7 +5315,6 @@
         <span class="k">if</span> <span class="p">(</span><span class="n">env_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">env_ids</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_INDICES</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
-            <span class="c1"># Convert int64 to int32 if needed, as warp expects int32</span>
             <span class="k">if</span> <span class="n">env_ids</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
                 <span class="n">env_ids</span> <span class="o">=</span> <span class="n">env_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">env_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
@@ -5200,9 +5342,6 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_joint_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve joint indices to a warp array or tensor.</span>
 
-<span class="sd">        .. note::</span>
-<span class="sd">            We do not need to convert torch tensors to warp arrays since they never get passed to the TensorAPI views.</span>
-
 <span class="sd">        Args:</span>
 <span class="sd">            joint_ids: Joint indices. If None, then all indices are used.</span>
 
@@ -5213,6 +5352,10 @@
             <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">joint_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">joint_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">joint_ids</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_JOINT_INDICES</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">joint_ids</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">joint_ids</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
+                <span class="n">joint_ids</span> <span class="o">=</span> <span class="n">joint_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">joint_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">joint_ids</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_body_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body_mask</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
@@ -5245,6 +5388,10 @@
             <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">body_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">body_ids</span> <span class="o">==</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ALL_BODY_INDICES</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">body_ids</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
+                <span class="n">body_ids</span> <span class="o">=</span> <span class="n">body_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">wp</span><span class="o">.</span><span class="n">from_torch</span><span class="p">(</span><span class="n">body_ids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">wp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">body_ids</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_fixed_tendon_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fixed_tendon_mask</span><span class="p">:</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
@@ -5477,17 +5624,14 @@
         <span class="n">joint_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">env_ids</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span> <span class="o">|</span> <span class="n">wp</span><span class="o">.</span><span class="n">array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated, same as :meth:`write_joint_position_to_sim_index` and</span>
-<span class="sd">        :meth:`write_joint_velocity_to_sim_index`.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deprecated, same as :meth:`write_joint_state_to_sim_index`.&quot;&quot;&quot;</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;The function &#39;write_joint_state_to_sim&#39; will be deprecated in a future release. Please&quot;</span>
-            <span class="s2">&quot; use &#39;write_joint_position_to_sim_index&#39; and &#39;write_joint_velocity_to_sim_index&#39; instead.&quot;</span><span class="p">,</span>
+            <span class="s2">&quot; use &#39;write_joint_state_to_sim_index&#39; instead.&quot;</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
             <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="c1"># set into simulation</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_joint_position_to_sim_index</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">joint_ids</span><span class="o">=</span><span class="n">joint_ids</span><span class="p">,</span> <span class="n">env_ids</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_joint_velocity_to_sim_index</span><span class="p">(</span><span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">joint_ids</span><span class="o">=</span><span class="n">joint_ids</span><span class="p">,</span> <span class="n">env_ids</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_joint_state_to_sim_index</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="n">velocity</span><span class="p">,</span> <span class="n">joint_ids</span><span class="o">=</span><span class="n">joint_ids</span><span class="p">,</span> <span class="n">env_ids</span><span class="o">=</span><span class="n">env_ids</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
@@ -5537,7 +5681,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

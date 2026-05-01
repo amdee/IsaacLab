@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="app_launcher.html" selected>develop</option>
             <option value="../../../../main/index.html" >main</option>
+            <option value="../../../../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/index.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/index.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/index.html" >v2.3.0</option>
@@ -302,6 +303,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -360,7 +362,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../source/overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../source/overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -711,57 +713,6 @@
         <span class="nb">setattr</span><span class="p">(</span><span class="n">namespace</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dest</span><span class="si">}</span><span class="s2">_explicit&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_parse_visualizer_csv</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse visualizer list from a single comma-delimited CLI token.&quot;&quot;&quot;</span>
-    <span class="n">valid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;kit&quot;</span><span class="p">,</span> <span class="s2">&quot;newton&quot;</span><span class="p">,</span> <span class="s2">&quot;rerun&quot;</span><span class="p">,</span> <span class="s2">&quot;viser&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">}</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
-            <span class="s2">&quot;Invalid --visualizer value: empty string. Use a comma-separated list, e.g. --viz kit,newton.&quot;</span>
-        <span class="p">)</span>
-    <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">token</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
-            <span class="s2">&quot;Invalid --visualizer value: spaces are not allowed. &quot;</span>
-            <span class="s2">&quot;Use a comma-separated list without spaces, e.g. --viz kit,newton,rerun,viser.&quot;</span>
-        <span class="p">)</span>
-
-    <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
-            <span class="s2">&quot;Invalid --visualizer value: empty visualizer entry detected. &quot;</span>
-            <span class="s2">&quot;Use a comma-separated list without empty items.&quot;</span>
-        <span class="p">)</span>
-    <span class="n">invalid</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">invalid</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Invalid --visualizer value(s): </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">invalid</span><span class="p">)</span><span class="si">}</span><span class="s2">. Valid options: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">valid</span><span class="p">))</span><span class="si">}</span><span class="s2">.&quot;</span>
-        <span class="p">)</span>
-    <span class="c1"># De-duplicate while preserving order.</span>
-    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_normalize_visualizer_intent</span><span class="p">(</span><span class="n">intent</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Normalize and validate upstream config visualizer intent payload.</span>
-
-<span class="sd">    The expected schema is:</span>
-<span class="sd">    ``{&quot;has_any_visualizers&quot;: bool, &quot;has_kit_visualizer&quot;: bool}``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">intent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid value for `visualizer_intent`: expected dict or None.&quot;</span><span class="p">)</span>
-
-    <span class="n">has_any</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;has_any_visualizers&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="n">has_kit</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;has_kit_visualizer&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">has_any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">has_kit</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Invalid `visualizer_intent` values: expected booleans for `has_any_visualizers` and `has_kit_visualizer`.&quot;</span>
-        <span class="p">)</span>
-    <span class="k">if</span> <span class="n">has_kit</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_any</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid `visualizer_intent`: `has_kit_visualizer=True` requires `has_any_visualizers=True`.&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">has_any</span><span class="p">,</span> <span class="n">has_kit</span>
-
-
 <span class="k">class</span><span class="w"> </span><span class="nc">ExplicitTrueAction</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom action to track explicit use of boolean flags.&quot;&quot;&quot;</span>
 
@@ -796,6 +747,99 @@
 <span class="sd">        ``LIVESTREAM`` is used.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AppLauncher.sync_visualizer_cli_settings_to_carb">
+<a class="viewcode-back" href="../../../source/api/lab/isaaclab.app.html#isaaclab.app.AppLauncher.sync_visualizer_cli_settings_to_carb">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sync_visualizer_cli_settings_to_carb</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write visualizer CLI selection and ``--max_visible_envs`` to carb settings.</span>
+
+<span class="sd">        Callers may set ``visualizer_explicit`` / ``visualizer_disable_all`` when those values</span>
+<span class="sd">        were resolved elsewhere (e.g. :class:`AppLauncher` strips flags from *launcher_args*).</span>
+<span class="sd">        Otherwise ``disable_all`` is inferred from ``&quot;none&quot;`` in ``visualizer``.</span>
+
+<span class="sd">        Also used when Kit is skipped (see :mod:`isaaclab_tasks.utils.sim_launcher`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">visualizers</span> <span class="o">=</span> <span class="n">launcher_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;visualizer&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;max_visible_envs&quot;</span> <span class="ow">in</span> <span class="n">launcher_args</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">launcher_args</span><span class="p">[</span><span class="s2">&quot;max_visible_envs&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid value for --max_visible_envs: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">. Expected non-negative int.&quot;</span><span class="p">)</span>
+
+        <span class="n">cli_explicit</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">launcher_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;visualizer_explicit&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s2">&quot;visualizer_disable_all&quot;</span> <span class="ow">in</span> <span class="n">launcher_args</span><span class="p">:</span>
+            <span class="n">cli_disable_all</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">[</span><span class="s2">&quot;visualizer_disable_all&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cli_disable_all</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">cli_explicit</span><span class="p">)</span> <span class="ow">and</span> <span class="n">visualizers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s2">&quot;none&quot;</span> <span class="ow">in</span> <span class="n">visualizers</span>
+
+        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+            <span class="n">visualizer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">visualizers</span><span class="p">)</span> <span class="k">if</span> <span class="n">visualizers</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">settings</span> <span class="o">=</span> <span class="n">get_settings_manager</span><span class="p">()</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/types&quot;</span><span class="p">,</span> <span class="n">visualizer_str</span><span class="p">)</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/explicit&quot;</span><span class="p">,</span> <span class="n">cli_explicit</span><span class="p">)</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/disable_all&quot;</span><span class="p">,</span> <span class="n">cli_disable_all</span><span class="p">)</span>
+
+            <span class="c1"># Sentinel: ``-1`` means ``--max_visible_envs`` was not passed (see ``SimulationContext``).</span>
+            <span class="k">if</span> <span class="s2">&quot;max_visible_envs&quot;</span> <span class="ow">in</span> <span class="n">launcher_args</span><span class="p">:</span>
+                <span class="n">settings</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/max_visible_envs&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">launcher_args</span><span class="p">[</span><span class="s2">&quot;max_visible_envs&quot;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">settings</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/max_visible_envs&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_visualizer_csv</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse visualizer list from a single comma-delimited CLI token.&quot;&quot;&quot;</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;kit&quot;</span><span class="p">,</span> <span class="s2">&quot;newton&quot;</span><span class="p">,</span> <span class="s2">&quot;rerun&quot;</span><span class="p">,</span> <span class="s2">&quot;viser&quot;</span><span class="p">,</span> <span class="s2">&quot;none&quot;</span><span class="p">}</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid --visualizer value: empty string. Use a comma-separated list, e.g. --viz kit,newton.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot; &quot;</span> <span class="ow">in</span> <span class="n">token</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid --visualizer value: spaces are not allowed. &quot;</span>
+                <span class="s2">&quot;Use a comma-separated list without spaces, e.g. --viz kit,newton,rerun,viser.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid --visualizer value: empty visualizer entry detected. &quot;</span>
+                <span class="s2">&quot;Use a comma-separated list without empty items.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">invalid</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">invalid</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentTypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid --visualizer value(s): </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">invalid</span><span class="p">)</span><span class="si">}</span><span class="s2">. Valid options: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">valid</span><span class="p">))</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># De-duplicate while preserving order.</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_normalize_visualizer_intent</span><span class="p">(</span><span class="n">intent</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">bool</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Normalize and validate upstream config visualizer intent payload.</span>
+
+<span class="sd">        The expected schema is:</span>
+<span class="sd">        ``{&quot;has_any_visualizers&quot;: bool, &quot;has_kit_visualizer&quot;: bool}``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">intent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">intent</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid value for `visualizer_intent`: expected dict or None.&quot;</span><span class="p">)</span>
+
+        <span class="n">has_any</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;has_any_visualizers&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">has_kit</span> <span class="o">=</span> <span class="n">intent</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;has_kit_visualizer&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">has_any</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">has_kit</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid `visualizer_intent` values: expected booleans for `has_any_visualizers` and &quot;</span>
+                <span class="s2">&quot;`has_kit_visualizer`.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">has_kit</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">has_any</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid `visualizer_intent`: `has_kit_visualizer=True` requires `has_any_visualizers=True`.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">has_any</span><span class="p">,</span> <span class="n">has_kit</span>
 
 <div class="viewcode-block" id="AppLauncher.__init__">
 <a class="viewcode-back" href="../../../source/api/lab/isaaclab.app.html#isaaclab.app.AppLauncher.__init__">[docs]</a>
@@ -854,7 +898,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_livestream</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>  <span class="c1"># 0: Disabled, 1: WebRTC public, 2: WebRTC private</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_offscreen_render</span><span class="p">:</span> <span class="nb">bool</span>  <span class="c1"># 0: Disabled, 1: Enabled</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sim_experience_file</span><span class="p">:</span> <span class="nb">str</span>  <span class="c1"># Experience file to load</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_visualizer_max_worlds</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>  <span class="c1"># Optional max worlds override for Newton-based visualizers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_video_enabled</span><span class="p">:</span> <span class="nb">bool</span>  <span class="c1"># Whether --video recording is enabled</span>
 
         <span class="c1"># Exposed to train scripts</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">device_id</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># device ID for GPU simulation (defaults to 0)</span>
@@ -868,6 +912,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_create_app</span><span class="p">()</span>
         <span class="c1"># Load IsaacSim extensions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_extensions</span><span class="p">()</span>
+
+        <span class="c1"># Re-run path sanitization.  Kit and its extensions may have inserted</span>
+        <span class="c1"># additional ``pip_prebundle`` or conflicting extension directories onto</span>
+        <span class="c1"># ``sys.path`` during startup.  A second pass ensures pip-installed</span>
+        <span class="c1"># packages still take priority over bundled copies.</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">isaaclab</span><span class="w"> </span><span class="kn">import</span> <span class="n">_deprioritize_prebundle_paths</span>
+
+        <span class="n">_deprioritize_prebundle_paths</span><span class="p">()</span>
+
         <span class="c1"># Hide the stop button in the toolbar</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hide_stop_button</span><span class="p">()</span>
         <span class="c1"># Set settings from the given rendering mode</span>
@@ -998,10 +1051,9 @@
 <span class="sd">          - Multiple visualizers can be specified as a comma-delimited list:</span>
 <span class="sd">            ``--viz rerun,newton,viser``.</span>
 
-<span class="sd">        * ``visualizer_max_worlds`` (int | None): Optional global override for the maximum number of worlds</span>
-<span class="sd">          rendered in Newton-based visualizers (newton, rerun, viser). If omitted, each visualizer uses its</span>
-<span class="sd">          config default.</span>
-
+<span class="sd">        * ``max_visible_envs`` (int | None): Optional global override for partial visualization by capping</span>
+<span class="sd">          how many environments are shown in the visualizers.</span>
+<span class="sd">          More partial visualization configuration fields are available in the ``VisualizerCfg`` class.</span>
 
 <span class="sd">        .. _`WebRTC`: https://docs.isaacsim.omniverse.nvidia.com/latest/installation/manual_livestream_clients.html#isaac-sim-short-webrtc-streaming-client</span>
 
@@ -1082,7 +1134,7 @@
         <span class="n">arg_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s2">&quot;--visualizer&quot;</span><span class="p">,</span>
             <span class="s2">&quot;--viz&quot;</span><span class="p">,</span>
-            <span class="nb">type</span><span class="o">=</span><span class="n">_parse_visualizer_csv</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="n">AppLauncher</span><span class="o">.</span><span class="n">_parse_visualizer_csv</span><span class="p">,</span>
             <span class="n">action</span><span class="o">=</span><span class="n">ExplicitAction</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Visualizer backends to enable as CSV (e.g., kit,newton,rerun,viser).&quot;</span><span class="p">,</span>
@@ -1153,13 +1205,10 @@
             <span class="p">),</span>
         <span class="p">)</span>
         <span class="n">arg_group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-            <span class="s2">&quot;--visualizer_max_worlds&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;--max_visible_envs&quot;</span><span class="p">,</span>
             <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-            <span class="n">default</span><span class="o">=</span><span class="n">AppLauncher</span><span class="o">.</span><span class="n">_APPLAUNCHER_CFG_INFO</span><span class="p">[</span><span class="s2">&quot;visualizer_max_worlds&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span>
-            <span class="n">help</span><span class="o">=</span><span class="p">(</span>
-                <span class="s2">&quot;Optional global max worlds override for Newton-based visualizers (newton/rerun/viser). &quot;</span>
-                <span class="s2">&quot;If omitted, visualizer config defaults are used.&quot;</span>
-            <span class="p">),</span>
+            <span class="n">default</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">SUPPRESS</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;When set, caps the nums of envs shown in the launched visualizers.&quot;</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="c1"># special flag for backwards compatibility</span>
 
@@ -1182,7 +1231,7 @@
         <span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="p">([</span><span class="nb">str</span><span class="p">],</span> <span class="s2">&quot;cuda:0&quot;</span><span class="p">),</span>
         <span class="s2">&quot;experience&quot;</span><span class="p">:</span> <span class="p">([</span><span class="nb">str</span><span class="p">],</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
         <span class="s2">&quot;rendering_mode&quot;</span><span class="p">:</span> <span class="p">([</span><span class="nb">str</span><span class="p">],</span> <span class="s2">&quot;balanced&quot;</span><span class="p">),</span>
-        <span class="s2">&quot;visualizer_max_worlds&quot;</span><span class="p">:</span> <span class="p">([</span><span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)],</span> <span class="kc">None</span><span class="p">),</span>
+        <span class="s2">&quot;max_visible_envs&quot;</span><span class="p">:</span> <span class="p">([</span><span class="nb">int</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)],</span> <span class="kc">None</span><span class="p">),</span>
     <span class="p">}</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A dictionary of arguments added manually by the :meth:`AppLauncher.add_app_launcher_args` method.</span>
 
@@ -1452,7 +1501,9 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_visualizer_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launcher_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve visualizer CLI semantics and normalize selection.&quot;&quot;&quot;</span>
         <span class="n">raw_visualizers</span> <span class="o">=</span> <span class="n">launcher_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;visualizer&quot;</span><span class="p">)</span>
-        <span class="n">cfg_has_any</span><span class="p">,</span> <span class="n">cfg_has_kit</span> <span class="o">=</span> <span class="n">_normalize_visualizer_intent</span><span class="p">(</span><span class="n">launcher_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;visualizer_intent&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">cfg_has_any</span><span class="p">,</span> <span class="n">cfg_has_kit</span> <span class="o">=</span> <span class="n">AppLauncher</span><span class="o">.</span><span class="n">_normalize_visualizer_intent</span><span class="p">(</span>
+            <span class="n">launcher_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;visualizer_intent&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cfg_has_any_visualizers</span> <span class="o">=</span> <span class="n">cfg_has_any</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cfg_has_kit_visualizer</span> <span class="o">=</span> <span class="n">cfg_has_kit</span>
         <span class="n">visualizer_explicit</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">launcher_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;visualizer_explicit&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
@@ -1462,7 +1513,7 @@
         <span class="n">visualizer_types</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">raw_visualizers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_visualizers</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="n">visualizer_types</span> <span class="o">=</span> <span class="n">_parse_visualizer_csv</span><span class="p">(</span><span class="n">raw_visualizers</span><span class="p">)</span>
+                <span class="n">visualizer_types</span> <span class="o">=</span> <span class="n">AppLauncher</span><span class="o">.</span><span class="n">_parse_visualizer_csv</span><span class="p">(</span><span class="n">raw_visualizers</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">visualizer_types</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">raw_visualizers</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
 
@@ -1528,12 +1579,13 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_viewport_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launcher_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve viewport related settings.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_video_enabled</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">launcher_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;video&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
         <span class="c1"># Check if we can disable the viewport to improve performance</span>
         <span class="c1">#   This should only happen if we are running headless and do not require livestreaming or video recording</span>
         <span class="c1">#   This is different from offscreen_render because this only affects the default viewport and</span>
         <span class="c1">#   not other render-products in the scene</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_render_viewport</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headless</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_livestream</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">launcher_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;video&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headless</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_livestream</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_video_enabled</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_render_viewport</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># hide_ui flag</span>
@@ -1755,6 +1807,8 @@
         <span class="c1"># (no Kit GUI) the AR profile must be enabled programmatically so that</span>
         <span class="c1"># the OpenXR session starts without user interaction</span>
         <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/xr/auto_start&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_headless</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xr</span><span class="p">)</span>
+        <span class="c1"># set setting to indicate video recording mode</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/video/enabled&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_video_enabled</span><span class="p">)</span>
 
         <span class="c1"># set setting to indicate no RTX sensors are used (set to True when RTX sensor is created)</span>
         <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/render/rtx_sensors&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
@@ -1818,28 +1872,14 @@
         <span class="n">settings</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s2">&quot;/isaaclab/anim_recording/stop_time&quot;</span><span class="p">,</span> <span class="n">stop_time</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_set_visualizer_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">launcher_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store visualizer selection and max-worlds override in settings.&quot;&quot;&quot;</span>
-        <span class="n">visualizers</span> <span class="o">=</span> <span class="n">launcher_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;visualizer&quot;</span><span class="p">)</span>
-        <span class="n">visualizer_max_worlds</span> <span class="o">=</span> <span class="n">launcher_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;visualizer_max_worlds&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">visualizer_max_worlds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">visualizer_max_worlds</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Invalid value for --visualizer_max_worlds: </span><span class="si">{</span><span class="n">visualizer_max_worlds</span><span class="si">}</span><span class="s2">. Expected non-negative int.&quot;</span>
-            <span class="p">)</span>
-
-        <span class="k">with</span> <span class="n">contextlib</span><span class="o">.</span><span class="n">suppress</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-            <span class="n">visualizer_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">visualizers</span><span class="p">)</span> <span class="k">if</span> <span class="n">visualizers</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
-            <span class="n">settings</span> <span class="o">=</span> <span class="n">get_settings_manager</span><span class="p">()</span>
-            <span class="n">cli_visualizer_explicit</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cli_visualizer_explicit&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="n">cli_visualizer_disable_all</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cli_visualizer_disable_all&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/types&quot;</span><span class="p">,</span> <span class="n">visualizer_str</span><span class="p">)</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/explicit&quot;</span><span class="p">,</span> <span class="n">cli_visualizer_explicit</span><span class="p">)</span>
-            <span class="n">settings</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/disable_all&quot;</span><span class="p">,</span> <span class="n">cli_visualizer_disable_all</span><span class="p">)</span>
-            <span class="c1"># Store as int setting where -1 means &quot;use per-visualizer defaults&quot;.</span>
-            <span class="k">if</span> <span class="n">visualizer_max_worlds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">settings</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/max_worlds&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">settings</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s2">&quot;/isaaclab/visualizer/max_worlds&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">visualizer_max_worlds</span><span class="p">))</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Persist visualizer CLI flags and ``max_visible_envs`` override for :class:`SimulationContext`.&quot;&quot;&quot;</span>
+        <span class="n">AppLauncher</span><span class="o">.</span><span class="n">sync_visualizer_cli_settings_to_carb</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="o">**</span><span class="n">launcher_args</span><span class="p">,</span>
+                <span class="s2">&quot;visualizer_explicit&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cli_visualizer_explicit&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="s2">&quot;visualizer_disable_all&quot;</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_cli_visualizer_disable_all&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_interrupt_signal_handle_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the interrupt signal from the keyboard.&quot;&quot;&quot;</span>
@@ -1941,7 +1981,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

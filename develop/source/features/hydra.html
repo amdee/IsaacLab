@@ -63,7 +63,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="May 01, 2026"/>
   </head>
   
   
@@ -160,6 +160,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="hydra.html" selected>develop</option>
             <option value="../../../main/source/features/hydra.html" >main</option>
+            <option value="../../../v3.0.0-beta/source/features/hydra.html" >v3.0.0-beta</option>
             <option value="../../../v2.3.2/source/features/hydra.html" >v2.3.2</option>
             <option value="../../../v2.3.1/source/features/hydra.html" >v2.3.1</option>
             <option value="../../../v2.3.0/source/features/hydra.html" >v2.3.0</option>
@@ -303,6 +304,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../how-to/estimate_how_many_cameras_can_run.html">Find How Many/What Cameras You Should Train With</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/configure_rendering.html">Configuring RTX Rendering Settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/draw_markers.html">Creating Visualization Markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../how-to/proxy_array.html">Working with ProxyArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/wrap_rl_env.html">Wrapping environments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/add_own_library.html">Adding your own learning library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../how-to/record_animation.html">Recording Animations of Simulations</a></li>
@@ -361,7 +363,7 @@
 </ul>
 </details></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../overview/imitation-learning/index.html">Imitation Learning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
-<li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/teleop_imitation.html">Teleoperation and Imitation Learning with Isaac Lab Mimic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/teleop_imitation.html">Synthetic Data Generation and Imitation Learning with Isaac Lab Mimic</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/humanoids_imitation.html">Examples: Data Generation and Imitation Learning for Humanoids</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/augmented_imitation.html">Augmented Imitation Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview/imitation-learning/skillgen.html">SkillGen for Automated Demonstration Generation</a></li>
@@ -839,31 +841,31 @@ In the above example, we could also disable the <code class="docutils literal no
 <section id="dictionaries">
 <h3>Dictionaries<a class="headerlink" href="#dictionaries" title="Link to this heading">#</a></h3>
 <p>Elements in dictionaries are handled as a parameters in the hierarchy. For example, in the Cartpole environment:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="n">spawn</span><span class="o">=</span><span class="n">sim_utils</span><span class="o">.</span><span class="n">GroundPlaneCfg</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">)),</span>
+    <span class="p">)</span>
 
-<span class="nd">@configclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">ObservationsCfg</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Observation specifications for the MDP.&quot;&quot;&quot;</span>
+    <span class="c1"># cartpole</span>
+    <span class="n">robot</span><span class="p">:</span> <span class="n">ArticulationCfg</span> <span class="o">=</span> <span class="n">CARTPOLE_CFG</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">prim_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{ENV_REGEX_NS}</span><span class="s2">/Robot&quot;</span><span class="p">)</span>
 
-    <span class="nd">@configclass</span>
-    <span class="k">class</span><span class="w"> </span><span class="nc">PolicyCfg</span><span class="p">(</span><span class="n">ObsGroup</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Observations for policy group.&quot;&quot;&quot;</span>
+    <span class="c1"># lights</span>
+    <span class="n">dome_light</span> <span class="o">=</span> <span class="n">AssetBaseCfg</span><span class="p">(</span>
+        <span class="n">prim_path</span><span class="o">=</span><span class="s2">&quot;/World/DomeLight&quot;</span><span class="p">,</span>
+        <span class="n">spawn</span><span class="o">=</span><span class="n">sim_utils</span><span class="o">.</span><span class="n">DomeLightCfg</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span> <span class="n">intensity</span><span class="o">=</span><span class="mf">500.0</span><span class="p">),</span>
+<span class="hll">    <span class="p">)</span>
+</span>
 
-<span class="hll">        <span class="c1"># observation terms (order preserved)</span>
-</span>        <span class="n">joint_pos_rel</span> <span class="o">=</span> <span class="n">ObsTerm</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">mdp</span><span class="o">.</span><span class="n">joint_pos_rel</span><span class="p">)</span>
-        <span class="n">joint_vel_rel</span> <span class="o">=</span> <span class="n">ObsTerm</span><span class="p">(</span><span class="n">func</span><span class="o">=</span><span class="n">mdp</span><span class="o">.</span><span class="n">joint_vel_rel</span><span class="p">)</span>
-
-        <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">enable_corruption</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">concatenate_terms</span> <span class="o">=</span> <span class="kc">True</span>
-
-    <span class="c1"># observation groups</span>
-    <span class="n">policy</span><span class="p">:</span> <span class="n">PolicyCfg</span> <span class="o">=</span> <span class="n">PolicyCfg</span><span class="p">()</span>
+<span class="c1">##</span>
+<span class="c1"># MDP settings</span>
+<span class="c1">##</span>
 
 
 <span class="nd">@configclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">EventCfg</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for events.&quot;&quot;&quot;</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ActionsCfg</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Action specifications for the MDP.&quot;&quot;&quot;</span>
+
+    <span class="n">joint_effort</span> <span class="o">=</span> <span class="n">mdp</span><span class="o">.</span><span class="n">JointEffortActionCfg</span><span class="p">(</span><span class="n">asset_name</span><span class="o">=</span><span class="s2">&quot;robot&quot;</span><span class="p">,</span> <span class="n">joint_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;slider_to_cart&quot;</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="mf">100.0</span><span class="p">)</span>
+
+
 </pre></div>
 </div>
 <p>the <code class="docutils literal notranslate"><span class="pre">position_range</span></code> parameter can be modified with <code class="docutils literal notranslate"><span class="pre">env.events.reset_cart_position.params.position_range=&quot;[-2.0,</span> <span class="pre">2.0]&quot;</span></code>.
@@ -882,9 +884,9 @@ are modified.</p>
 <p>For example, for the configuration of the Cartpole camera depth environment:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">CartpoleDepthCameraEnvCfg</span><span class="p">(</span><span class="n">CartpoleRGBCameraEnvCfg</span><span class="p">):</span>
     <span class="c1"># camera</span>
-    <span class="n">tiled_camera</span><span class="p">:</span> <span class="n">TiledCameraCfg</span> <span class="o">=</span> <span class="n">TiledCameraCfg</span><span class="p">(</span>
+    <span class="n">tiled_camera</span><span class="p">:</span> <span class="n">CameraCfg</span> <span class="o">=</span> <span class="n">CameraCfg</span><span class="p">(</span>
         <span class="n">prim_path</span><span class="o">=</span><span class="s2">&quot;/World/envs/env_.*/Camera&quot;</span><span class="p">,</span>
-        <span class="n">offset</span><span class="o">=</span><span class="n">TiledCameraCfg</span><span class="o">.</span><span class="n">OffsetCfg</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="n">rot</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">convention</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">),</span>
+        <span class="n">offset</span><span class="o">=</span><span class="n">CameraCfg</span><span class="o">.</span><span class="n">OffsetCfg</span><span class="p">(</span><span class="n">pos</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span> <span class="n">rot</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">convention</span><span class="o">=</span><span class="s2">&quot;world&quot;</span><span class="p">),</span>
         <span class="n">data_types</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;depth&quot;</span><span class="p">],</span>
         <span class="n">spawn</span><span class="o">=</span><span class="n">sim_utils</span><span class="o">.</span><span class="n">PinholeCameraCfg</span><span class="p">(</span>
             <span class="n">focal_length</span><span class="o">=</span><span class="mf">24.0</span><span class="p">,</span> <span class="n">focus_distance</span><span class="o">=</span><span class="mf">400.0</span><span class="p">,</span> <span class="n">horizontal_aperture</span><span class="o">=</span><span class="mf">20.955</span><span class="p">,</span> <span class="n">clipping_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">)</span>
@@ -904,6 +906,8 @@ the post init update is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LocomotionVelocityRoughEnvCfg</span><span class="p">(</span><span class="n">ManagerBasedRLEnvCfg</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Configuration for the locomotion velocity-tracking environment.&quot;&quot;&quot;</span>
 
+    <span class="c1"># Simulation settings — shared physics preset (PhysX + Newton) for all rough-terrain envs</span>
+    <span class="n">sim</span><span class="p">:</span> <span class="n">SimulationCfg</span> <span class="o">=</span> <span class="n">SimulationCfg</span><span class="p">(</span><span class="n">physics</span><span class="o">=</span><span class="n">RoughPhysicsCfg</span><span class="p">())</span>
     <span class="c1"># Scene settings</span>
     <span class="n">scene</span><span class="p">:</span> <span class="n">MySceneCfg</span> <span class="o">=</span> <span class="n">MySceneCfg</span><span class="p">(</span><span class="n">num_envs</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span> <span class="n">env_spacing</span><span class="o">=</span><span class="mf">2.5</span><span class="p">)</span>
     <span class="c1"># Basic settings</span>
@@ -913,7 +917,7 @@ the post init update is as follows:</p>
     <span class="c1"># MDP settings</span>
     <span class="n">rewards</span><span class="p">:</span> <span class="n">RewardsCfg</span> <span class="o">=</span> <span class="n">RewardsCfg</span><span class="p">()</span>
     <span class="n">terminations</span><span class="p">:</span> <span class="n">TerminationsCfg</span> <span class="o">=</span> <span class="n">TerminationsCfg</span><span class="p">()</span>
-    <span class="n">events</span><span class="p">:</span> <span class="n">EventsCfg</span> <span class="o">=</span> <span class="n">MISSING</span>
+    <span class="n">events</span><span class="p">:</span> <span class="n">EventsCfg</span> <span class="o">=</span> <span class="n">EventsCfg</span><span class="p">()</span>
     <span class="n">curriculum</span><span class="p">:</span> <span class="n">CurriculumCfg</span> <span class="o">=</span> <span class="n">CurriculumCfg</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -921,18 +925,18 @@ the post init update is as follows:</p>
         <span class="c1"># general settings</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decimation</span> <span class="o">=</span> <span class="mi">4</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">episode_length_s</span> <span class="o">=</span> <span class="mf">20.0</span>
-        <span class="c1"># simulation settings</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.005</span>
-<span class="hll">        <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">render_interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decimation</span>
-</span>        <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">physics_material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">physics_material</span>
+<span class="hll">        <span class="c1"># simulation settings</span>
+</span>        <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="mf">0.005</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">render_interval</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decimation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">physics_material</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">physics_material</span>
         <span class="c1"># update sensor update periods</span>
         <span class="c1"># we tick all the sensors based on the smallest update period (physics update period)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">height_scanner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">height_scanner</span><span class="o">.</span><span class="n">update_period</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decimation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">dt</span>
+<span class="hll">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">height_scanner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span>            <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">height_scanner</span><span class="o">.</span><span class="n">update_period</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decimation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">dt</span>
 <span class="hll">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">contact_forces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 </span>            <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">contact_forces</span><span class="o">.</span><span class="n">update_period</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">dt</span>
-<span class="hll">
-</span>        <span class="c1"># check if terrain levels curriculum is enabled - if so, enable curriculum for terrain generator</span>
+
+        <span class="c1"># check if terrain levels curriculum is enabled - if so, enable curriculum for terrain generator</span>
         <span class="c1"># this generates terrains with increasing difficulty and is useful for training</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">curriculum</span><span class="p">,</span> <span class="s2">&quot;terrain_levels&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">terrain_generator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1116,28 +1120,28 @@ so the ambiguity is caught early:</p>
 <h3>Real-World Example<a class="headerlink" href="#real-world-example" title="Link to this heading">#</a></h3>
 <p>The ANYmal-C locomotion environment shows both <code class="docutils literal notranslate"><span class="pre">PresetCfg</span></code> and <code class="docutils literal notranslate"><span class="pre">preset()</span></code>
 working together:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@configclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnymalCPhysxEventsCfg</span><span class="p">(</span><span class="n">EventsCfg</span><span class="p">,</span> <span class="n">StartupEventsCfg</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
-<span class="nd">@configclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnymalCEventsCfg</span><span class="p">(</span><span class="n">PresetCfg</span><span class="p">):</span>
-    <span class="n">default</span> <span class="o">=</span> <span class="n">AnymalCPhysxEventsCfg</span><span class="p">()</span>
-    <span class="n">newton</span> <span class="o">=</span> <span class="n">EventsCfg</span><span class="p">()</span>
-    <span class="n">physx</span> <span class="o">=</span> <span class="n">default</span>
-
-
-<span class="nd">@configclass</span>
-<span class="k">class</span><span class="w"> </span><span class="nc">AnymalCRoughEnvCfg</span><span class="p">(</span><span class="n">LocomotionVelocityRoughEnvCfg</span><span class="p">):</span>
-    <span class="n">events</span><span class="p">:</span> <span class="n">AnymalCEventsCfg</span> <span class="o">=</span> <span class="n">AnymalCEventsCfg</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># post init of parent</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>        <span class="c1"># post init of parent</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
         <span class="c1"># switch robot to anymal-c</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="n">ANYMAL_C_CFG</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">prim_path</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{ENV_REGEX_NS}</span><span class="s2">/Robot&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">actuators</span><span class="p">[</span><span class="s2">&quot;legs&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">armature</span> <span class="o">=</span> <span class="n">preset</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">newton</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">physx</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+
+
+<span class="nd">@configclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">AnymalCRoughEnvCfg_PLAY</span><span class="p">(</span><span class="n">AnymalCRoughEnvCfg</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># post init of parent</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__post_init__</span><span class="p">()</span>
+
+        <span class="c1"># make a smaller scene for play</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">num_envs</span> <span class="o">=</span> <span class="mi">50</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">env_spacing</span> <span class="o">=</span> <span class="mf">2.5</span>
+        <span class="c1"># spawn the robot randomly in the grid (instead of their terrain levels)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">max_init_terrain_level</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># reduce the number of terrains to save memory</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">terrain_generator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">terrain_generator</span><span class="o">.</span><span class="n">num_rows</span> <span class="o">=</span> <span class="mi">5</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">terrain</span><span class="o">.</span><span class="n">terrain_generator</span><span class="o">.</span><span class="n">num_cols</span> <span class="o">=</span> <span class="mi">5</span>
 </pre></div>
 </div>
 <p>A single <code class="docutils literal notranslate"><span class="pre">presets=newton</span></code> on the command line resolves every <code class="docutils literal notranslate"><span class="pre">PresetCfg</span></code>
@@ -1288,7 +1292,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on May 01, 2026.
   <br/>
 </p>
   </div>

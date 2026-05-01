@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.3.1" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="Apr 30, 2026"/>
   </head>
   
   
@@ -159,6 +159,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="../develop/index.html" >develop</option>
             <option value="../main/index.html" >main</option>
+            <option value="../v3.0.0-beta/index.html" >v3.0.0-beta</option>
             <option value="../v2.3.2/index.html" >v2.3.2</option>
             <option value="genindex.html" selected>v2.3.1</option>
             <option value="../v2.3.0/index.html" >v2.3.0</option>
@@ -859,9 +860,19 @@
       <li><a href="source/api/lab/isaaclab.controllers.html#isaaclab.controllers.pink_ik.NullSpacePostureTask.__new__">__new__() (isaaclab.controllers.pink_ik.NullSpacePostureTask static method)</a>
 
       <ul>
+        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnv.__new__">(isaaclab.envs.DirectMARLEnv static method)</a>
+</li>
+        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectRLEnv.__new__">(isaaclab.envs.DirectRLEnv static method)</a>
+</li>
+        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLEnv.__new__">(isaaclab.envs.ManagerBasedRLEnv static method)</a>
+</li>
+        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.__new__">(isaaclab.envs.ManagerBasedRLMimicEnv static method)</a>
+</li>
         <li><a href="source/api/lab/isaaclab.managers.html#isaaclab.managers.RewardTermCfg.__new__">(isaaclab.managers.RewardTermCfg class method)</a>
 </li>
         <li><a href="source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.RenderMode.__new__">(isaaclab.sim.SimulationContext.RenderMode method)</a>
+</li>
+        <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.__new__">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv static method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -3530,6 +3541,8 @@
         <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.get_robot_eef_pose">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.get_setting">get_setting() (isaaclab.sim.SimulationContext method)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.scene.html#isaaclab.scene.InteractiveScene.get_state">get_state() (isaaclab.scene.InteractiveScene method)</a>
@@ -3540,8 +3553,6 @@
         <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.get_subtask_start_signals">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.get_subtask_term_signals">get_subtask_term_signals() (isaaclab.envs.ManagerBasedRLMimicEnv method)</a>
 
       <ul>
@@ -3568,18 +3579,6 @@
 </li>
       <li><a href="source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.get_version">get_version() (isaaclab.sim.SimulationContext method)</a>
 </li>
-      <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnv.get_wrapper_attr">get_wrapper_attr() (isaaclab.envs.DirectMARLEnv method)</a>
-
-      <ul>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectRLEnv.get_wrapper_attr">(isaaclab.envs.DirectRLEnv method)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLEnv.get_wrapper_attr">(isaaclab.envs.ManagerBasedRLEnv method)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.get_wrapper_attr">(isaaclab.envs.ManagerBasedRLMimicEnv method)</a>
-</li>
-        <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.get_wrapper_attr">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv method)</a>
-</li>
-      </ul></li>
       <li><a href="source/api/lab/isaaclab.sim.spawners.html#isaaclab.sim.spawners.materials.GlassMdlCfg.glass_color">glass_color (isaaclab.sim.spawners.materials.GlassMdlCfg attribute)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.sim.spawners.html#isaaclab.sim.spawners.materials.GlassMdlCfg.glass_ior">glass_ior (isaaclab.sim.spawners.materials.GlassMdlCfg attribute)</a>
@@ -3702,18 +3701,6 @@
 </li>
       <li><a href="source/api/lab/isaaclab.sim.html#isaaclab.sim.SimulationContext.has_rtx_sensors">has_rtx_sensors() (isaaclab.sim.SimulationContext method)</a>
 </li>
-      <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnv.has_wrapper_attr">has_wrapper_attr() (isaaclab.envs.DirectMARLEnv method)</a>
-
-      <ul>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectRLEnv.has_wrapper_attr">(isaaclab.envs.DirectRLEnv method)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLEnv.has_wrapper_attr">(isaaclab.envs.ManagerBasedRLEnv method)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.has_wrapper_attr">(isaaclab.envs.ManagerBasedRLMimicEnv method)</a>
-</li>
-        <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.has_wrapper_attr">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv method)</a>
-</li>
-      </ul></li>
       <li><a href="source/api/lab/isaaclab.devices.html#isaaclab.devices.OpenXRDevice.TrackingTarget.HEAD">HEAD (isaaclab.devices.OpenXRDevice.TrackingTarget attribute)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.envs.mdp.html#isaaclab.envs.mdp.commands.commands_cfg.TerrainBasedPose2dCommandCfg.Ranges.heading">heading (isaaclab.envs.mdp.commands.commands_cfg.TerrainBasedPose2dCommandCfg.Ranges attribute)</a>
@@ -5527,30 +5514,6 @@
 </li>
       <li><a href="source/api/lab/isaaclab.envs.mdp.html#isaaclab.envs.mdp.commands.commands_cfg.NormalVelocityCommandCfg.Ranges">NormalVelocityCommandCfg.Ranges (class in isaaclab.envs.mdp.commands.commands_cfg)</a>
 </li>
-      <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnv.np_random">np_random (isaaclab.envs.DirectMARLEnv property)</a>
-
-      <ul>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectRLEnv.np_random">(isaaclab.envs.DirectRLEnv property)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLEnv.np_random">(isaaclab.envs.ManagerBasedRLEnv property)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.np_random">(isaaclab.envs.ManagerBasedRLMimicEnv property)</a>
-</li>
-        <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.np_random">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv property)</a>
-</li>
-      </ul></li>
-      <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnv.np_random_seed">np_random_seed (isaaclab.envs.DirectMARLEnv property)</a>
-
-      <ul>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectRLEnv.np_random_seed">(isaaclab.envs.DirectRLEnv property)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLEnv.np_random_seed">(isaaclab.envs.ManagerBasedRLEnv property)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.np_random_seed">(isaaclab.envs.ManagerBasedRLMimicEnv property)</a>
-</li>
-        <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.np_random_seed">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv property)</a>
-</li>
-      </ul></li>
       <li><a href="source/api/lab/isaaclab.utils.html#isaaclab.utils.assets.NUCLEUS_ASSET_ROOT_DIR">NUCLEUS_ASSET_ROOT_DIR (in module isaaclab.utils.assets)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.envs.mdp.html#isaaclab.envs.mdp.commands.commands_cfg.NullCommandCfg">NullCommandCfg (class in isaaclab.envs.mdp.commands.commands_cfg)</a>
@@ -5587,8 +5550,6 @@
         <li><a href="source/api/lab/isaaclab.sensors.html#isaaclab.sensors.FrameTransformer.num_bodies">(isaaclab.sensors.FrameTransformer property)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.terrains.html#isaaclab.terrains.TerrainGeneratorCfg.num_cols">num_cols (isaaclab.terrains.TerrainGeneratorCfg attribute)</a>
 </li>
       <li><a href="source/api/lab_mimic/isaaclab_mimic.datagen.html#isaaclab_mimic.datagen.DataGenInfoPool.num_datagen_infos">num_datagen_infos (isaaclab_mimic.datagen.DataGenInfoPool property)</a>
@@ -5633,6 +5594,8 @@
         <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.num_envs">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.SubTaskConfig.num_fixed_steps">num_fixed_steps (isaaclab.envs.SubTaskConfig attribute)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.assets.html#isaaclab.assets.Articulation.num_fixed_tendons">num_fixed_tendons (isaaclab.assets.Articulation property)</a>
@@ -7679,18 +7642,6 @@
         <li><a href="source/api/lab/isaaclab.sensors.html#isaaclab.sensors.TiledCamera.set_world_poses_from_view">(isaaclab.sensors.TiledCamera method)</a>
 </li>
       </ul></li>
-      <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnv.set_wrapper_attr">set_wrapper_attr() (isaaclab.envs.DirectMARLEnv method)</a>
-
-      <ul>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectRLEnv.set_wrapper_attr">(isaaclab.envs.DirectRLEnv method)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLEnv.set_wrapper_attr">(isaaclab.envs.ManagerBasedRLEnv method)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.set_wrapper_attr">(isaaclab.envs.ManagerBasedRLMimicEnv method)</a>
-</li>
-        <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.set_wrapper_attr">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv method)</a>
-</li>
-      </ul></li>
       <li><a href="source/api/lab/isaaclab.sim.schemas.html#isaaclab.sim.schemas.DeformableBodyPropertiesCfg.settling_threshold">settling_threshold (isaaclab.sim.schemas.DeformableBodyPropertiesCfg attribute)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedEnv.setup_manager_visualizers">setup_manager_visualizers() (isaaclab.envs.ManagerBasedEnv method)</a>
@@ -7705,8 +7656,6 @@
       </ul></li>
       <li><a href="source/api/lab/isaaclab.sim.spawners.html#isaaclab.sim.spawners.shapes.ShapeCfg">ShapeCfg (class in isaaclab.sim.spawners.shapes)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.controllers.html#isaaclab.controllers.pink_ik.PinkIKControllerCfg.show_ik_warnings">show_ik_warnings (isaaclab.controllers.pink_ik.PinkIKControllerCfg attribute)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnvCfg.sim">sim (isaaclab.envs.DirectMARLEnvCfg attribute)</a>
@@ -7721,6 +7670,8 @@
         <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnvCfg.sim">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnvCfg attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.assets.html#isaaclab.assets.DeformableObjectData.sim_element_deform_gradient_w">sim_element_deform_gradient_w (isaaclab.assets.DeformableObjectData property)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.assets.html#isaaclab.assets.DeformableObjectData.sim_element_quat_w">sim_element_quat_w (isaaclab.assets.DeformableObjectData property)</a>
@@ -8362,14 +8313,6 @@
       <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectMARLEnv.unwrapped">unwrapped (isaaclab.envs.DirectMARLEnv property)</a>
 
       <ul>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.DirectRLEnv.unwrapped">(isaaclab.envs.DirectRLEnv property)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLEnv.unwrapped">(isaaclab.envs.ManagerBasedRLEnv property)</a>
-</li>
-        <li><a href="source/api/lab/isaaclab.envs.html#isaaclab.envs.ManagerBasedRLMimicEnv.unwrapped">(isaaclab.envs.ManagerBasedRLMimicEnv property)</a>
-</li>
-        <li><a href="source/api/lab_mimic/isaaclab_mimic.envs.html#isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv.unwrapped">(isaaclab_mimic.envs.FrankaCubeStackIKRelMimicEnv property)</a>
-</li>
         <li><a href="source/api/lab_rl/isaaclab_rl.html#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.unwrapped">(isaaclab_rl.rsl_rl.RslRlVecEnvWrapper property)</a>
 </li>
         <li><a href="source/api/lab_rl/isaaclab_rl.html#isaaclab_rl.sb3.Sb3VecEnvWrapper.unwrapped">(isaaclab_rl.sb3.Sb3VecEnvWrapper property)</a>
@@ -8429,12 +8372,12 @@
       </ul></li>
       <li><a href="source/api/lab/isaaclab.envs.ui.html#isaaclab.envs.ui.ViewportCameraController.update_view_location">update_view_location() (isaaclab.envs.ui.ViewportCameraController method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.envs.ui.html#isaaclab.envs.ui.ViewportCameraController.update_view_to_asset_body">update_view_to_asset_body() (isaaclab.envs.ui.ViewportCameraController method)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.envs.ui.html#isaaclab.envs.ui.ViewportCameraController.update_view_to_asset_root">update_view_to_asset_root() (isaaclab.envs.ui.ViewportCameraController method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="source/api/lab/isaaclab.envs.ui.html#isaaclab.envs.ui.ViewportCameraController.update_view_to_env">update_view_to_env() (isaaclab.envs.ui.ViewportCameraController method)</a>
 </li>
       <li><a href="source/api/lab/isaaclab.envs.ui.html#isaaclab.envs.ui.ViewportCameraController.update_view_to_world">update_view_to_world() (isaaclab.envs.ui.ViewportCameraController method)</a>
@@ -9149,7 +9092,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on Apr 30, 2026.
   <br/>
 </p>
   </div>

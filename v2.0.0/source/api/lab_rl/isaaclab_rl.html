@@ -61,7 +61,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="2.0.0" />
-    <meta name="docbuild:last-update" content="Apr 17, 2026"/>
+    <meta name="docbuild:last-update" content="Apr 30, 2026"/>
   </head>
   
   
@@ -160,6 +160,7 @@
           <select id="version-select" class="version-dropdown" style="margin: 0 auto; display: block;" onchange="location = this.value;">
             <option value="../../../../develop/source/api/lab_rl/isaaclab_rl.html" >develop</option>
             <option value="../../../../main/source/api/lab_rl/isaaclab_rl.html" >main</option>
+            <option value="../../../../v3.0.0-beta/source/api/lab_rl/isaaclab_rl.html" >v3.0.0-beta</option>
             <option value="../../../../v2.3.2/source/api/lab_rl/isaaclab_rl.html" >v2.3.2</option>
             <option value="../../../../v2.3.1/source/api/lab_rl/isaaclab_rl.html" >v2.3.1</option>
             <option value="../../../../v2.3.0/source/api/lab_rl/isaaclab_rl.html" >v2.3.0</option>
@@ -1541,13 +1542,13 @@ wrapper.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.observation_space">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observation_space</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://gymnasium.farama.org/api/spaces/#gymnasium.spaces.Space" title="(in Gymnasium)"><span class="pre">Space</span></a></em><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.observation_space" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observation_space</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">gymnasium.Space</span></em><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.observation_space" title="Link to this definition">#</a></dt>
 <dd><p>Returns the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Env</span></code> <a class="reference internal" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.observation_space" title="isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.observation_space"><code class="xref py py-attr docutils literal notranslate"><span class="pre">observation_space</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.action_space">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_space</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://gymnasium.farama.org/api/spaces/#gymnasium.spaces.Space" title="(in Gymnasium)"><span class="pre">Space</span></a></em><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.action_space" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">action_space</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">gymnasium.Space</span></em><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.action_space" title="Link to this definition">#</a></dt>
 <dd><p>Returns the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Env</span></code> <a class="reference internal" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.action_space" title="isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.action_space"><code class="xref py py-attr docutils literal notranslate"><span class="pre">action_space</span></code></a>.</p>
 </dd></dl>
 
@@ -1566,13 +1567,13 @@ wrapper.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.get_observations">
-<span class="sig-name descname"><span class="pre">get_observations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/isaaclab_rl/rsl_rl/vecenv_wrapper.html#RslRlVecEnvWrapper.get_observations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.get_observations" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_observations</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.14)"><span class="pre">tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.pytorch.org/docs/2.11/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../../../_modules/isaaclab_rl/rsl_rl/vecenv_wrapper.html#RslRlVecEnvWrapper.get_observations"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.get_observations" title="Link to this definition">#</a></dt>
 <dd><p>Returns the current observations of the environment.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.episode_length_buf">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">episode_length_buf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a></em><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.episode_length_buf" title="Link to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">episode_length_buf</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/2.11/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">torch.Tensor</span></a></em><a class="headerlink" href="#isaaclab_rl.rsl_rl.RslRlVecEnvWrapper.episode_length_buf" title="Link to this definition">#</a></dt>
 <dd><p>The episode length buffer.</p>
 </dd></dl>
 
@@ -1959,7 +1960,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on Apr 17, 2026.
+  Last updated on Apr 30, 2026.
   <br/>
 </p>
   </div>
