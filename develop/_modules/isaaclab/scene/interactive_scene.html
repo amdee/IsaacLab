@@ -60,7 +60,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="May 03, 2026"/>
+    <meta name="docbuild:last-update" content="May 04, 2026"/>
   </head>
   
   
@@ -1183,6 +1183,11 @@
 <span class="sd">        Args:</span>
 <span class="sd">            dt: The amount of time passed from last :meth:`update` call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Scene-wide renderer transform sync once per step when all sensors update,</span>
+        <span class="c1"># so per-camera fetches do not own this concern (deduped inside RenderContext).</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cfg</span><span class="o">.</span><span class="n">lazy_sensor_update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">render_context</span><span class="o">.</span><span class="n">update_transforms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sim</span><span class="o">.</span><span class="n">get_physics_step_count</span><span class="p">())</span>
+
         <span class="c1"># -- assets</span>
         <span class="k">for</span> <span class="n">articulation</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_articulations</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">articulation</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
@@ -1645,7 +1650,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 03, 2026.
+  Last updated on May 04, 2026.
   <br/>
 </p>
   </div>

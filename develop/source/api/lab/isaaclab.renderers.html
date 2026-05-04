@@ -63,7 +63,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="3.0.0" />
-    <meta name="docbuild:last-update" content="May 03, 2026"/>
+    <meta name="docbuild:last-update" content="May 04, 2026"/>
   </head>
   
   
@@ -799,10 +799,10 @@ different renderer backends that can be used with Isaac Lab.</p>
 <td><p>Per-output layout (channels + dtype) this renderer can produce.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.renderers.BaseRenderer.prepare_stage" title="isaaclab.renderers.BaseRenderer.prepare_stage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_stage</span></code></a>(stage, num_envs)</p></td>
-<td><p>Prepare the stage for rendering before create_render_data is called.</p></td>
+<td><p>Prepare the stage for rendering before <a class="reference internal" href="#isaaclab.renderers.BaseRenderer.create_render_data" title="isaaclab.renderers.BaseRenderer.create_render_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_render_data()</span></code></a> is called.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.renderers.BaseRenderer.create_render_data" title="isaaclab.renderers.BaseRenderer.create_render_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_render_data</span></code></a>(sensor)</p></td>
-<td><p>Create render data for the given sensor.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#isaaclab.renderers.BaseRenderer.create_render_data" title="isaaclab.renderers.BaseRenderer.create_render_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_render_data</span></code></a>(spec)</p></td>
+<td><p>Create render data for the given camera <code class="xref py py-class docutils literal notranslate"><span class="pre">CameraRenderSpec</span></code>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#isaaclab.renderers.BaseRenderer.set_outputs" title="isaaclab.renderers.BaseRenderer.set_outputs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_outputs</span></code></a>(render_data, output_data)</p></td>
 <td><p>Store reference to output buffers for writing during render.</p></td>
@@ -840,10 +840,10 @@ different renderer backends that can be used with Isaac Lab.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="isaaclab.renderers.BaseRenderer.prepare_stage">
 <em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prepare_stage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_envs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/isaaclab/renderers/base_renderer.html#BaseRenderer.prepare_stage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab.renderers.BaseRenderer.prepare_stage" title="Link to this definition">#</a></dt>
-<dd><p>Prepare the stage for rendering before create_render_data is called.</p>
+<dd><p>Prepare the stage for rendering before <a class="reference internal" href="#isaaclab.renderers.BaseRenderer.create_render_data" title="isaaclab.renderers.BaseRenderer.create_render_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_render_data()</span></code></a> is called.</p>
 <p>Some renderers need to export or preprocess the USD stage before
 creating render data. This method is called after the renderer is
-instantiated and before create_render_data.</p>
+instantiated and before <a class="reference internal" href="#isaaclab.renderers.BaseRenderer.create_render_data" title="isaaclab.renderers.BaseRenderer.create_render_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">create_render_data()</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -856,18 +856,14 @@ instantiated and before create_render_data.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="isaaclab.renderers.BaseRenderer.create_render_data">
-<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_render_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sensor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="isaaclab.sensors.html#isaaclab.sensors.SensorBase" title="isaaclab.sensors.SensorBase"><span class="pre">SensorBase</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Any</span></span></span><a class="reference internal" href="../../../_modules/isaaclab/renderers/base_renderer.html#BaseRenderer.create_render_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab.renderers.BaseRenderer.create_render_data" title="Link to this definition">#</a></dt>
-<dd><p>Create render data for the given sensor.</p>
-<p>The returned object is opaque to the interface: callers pass it to other
-renderer methods without inspecting its contents. Its structure is
-implementation-specific (each renderer defines its own type).</p>
+<em class="property"><span class="k"><span class="pre">abstractmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_render_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spec</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">CameraRenderSpec</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Any" title="(in Python v3.14)"><span class="pre">Any</span></a></span></span><a class="reference internal" href="../../../_modules/isaaclab/renderers/base_renderer.html#BaseRenderer.create_render_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#isaaclab.renderers.BaseRenderer.create_render_data" title="Link to this definition">#</a></dt>
+<dd><p>Create render data for the given camera <code class="xref py py-class docutils literal notranslate"><span class="pre">CameraRenderSpec</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>sensor</strong> – The camera sensor to create render data for.</p>
+<dd class="field-odd"><p><strong>spec</strong> – Immutable description of the tiled camera (paths, config, device).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Renderer-specific data object holding resources needed for rendering.
-Passed to subsequent render calls.</p>
+<dd class="field-even"><p>Renderer-specific data for subsequent <a class="reference internal" href="#isaaclab.renderers.BaseRenderer.render" title="isaaclab.renderers.BaseRenderer.render"><code class="xref py py-meth docutils literal notranslate"><span class="pre">render()</span></code></a> / <a class="reference internal" href="#isaaclab.renderers.BaseRenderer.read_output" title="isaaclab.renderers.BaseRenderer.read_output"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_output()</span></code></a> calls.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1093,7 +1089,7 @@ By The Isaac Lab Project Developers.
   
   <div class="footer-item">
     <p class="last-updated">
-  Last updated on May 03, 2026.
+  Last updated on May 04, 2026.
   <br/>
 </p>
   </div>
