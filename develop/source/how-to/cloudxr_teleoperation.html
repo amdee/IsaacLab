@@ -847,6 +847,14 @@ terminal or <code class="docutils literal notranslate"><span class="pre">source<
 <span class="w">    </span>--xr
 </pre></div>
 </div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Isaac-PickPlace-GR1T2-WaistEnabled-Abs-v0</span></code> task above uses <strong>hand tracking</strong> as its
+input mode. Make sure your XR device has hand tracking enabled (optical hand tracking on
+Quest 3, or the built-in hand tracking on Apple Vision Pro). Different tasks require
+different input modes (motion controllers vs hand tracking) – see the
+<a class="reference internal" href="../features/isaac_teleop.html#isaac-teleop-control-schemes"><span class="std std-ref">Choose a Control Scheme</span></a> table for the full list.</p>
+</div>
 <p>To switch the CloudXR device profile at launch time (e.g. from Quest to Apple Vision Pro),
 use the <code class="docutils literal notranslate"><span class="pre">--cloudxr_env</span></code> flag:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./isaaclab.sh<span class="w"> </span>-p<span class="w"> </span>scripts/environments/teleoperation/teleop_se3_agent.py<span class="w"> </span><span class="se">\</span>
