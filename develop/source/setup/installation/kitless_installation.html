@@ -848,8 +848,6 @@ sub-package names:</p>
 <p>OVRTX provides GPU-accelerated rendering for vision tasks without Kit.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./isaaclab.sh<span class="w"> </span>-i<span class="w"> </span>ov<span class="o">[</span>ovrtx<span class="o">]</span>
 
-<span class="nb">export</span><span class="w"> </span><span class="nv">LD_PRELOAD</span><span class="o">=</span><span class="k">$(</span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import ovrtx, pathlib; print(pathlib.Path(ovrtx.__file__).parent / &#39;bin/plugins/libcarb.so&#39;)&quot;</span><span class="k">)</span>
-
 ./isaaclab.sh<span class="w"> </span>-p<span class="w"> </span>scripts/benchmarks/benchmark_rsl_rl.py<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--task<span class="w"> </span>Isaac-Repose-Cube-Shadow-Vision-Benchmark-Direct-v0<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--headless<span class="w"> </span>--enable_cameras<span class="w"> </span>--num_envs<span class="w"> </span><span class="m">16</span><span class="w"> </span>--max_iterations<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
