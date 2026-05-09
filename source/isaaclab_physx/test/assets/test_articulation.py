@@ -960,11 +960,9 @@ def test_external_force_on_single_body_at_position(sim, num_articulations, devic
 
     # Now we are ready!
     for i in range(5):
-        # reset root state
-        root_pose = articulation.data.default_root_pose.torch.clone()
-        root_pose[0, 0] = 2.5  # space them apart by 2.5m
-
-        articulation.write_root_pose_to_sim_index(root_pose=root_pose)
+        # reset root state — use default poses directly so articulations stay at their
+        # pre-assigned prim offsets (already 2.5 m apart) and do not overlap each other.
+        articulation.write_root_pose_to_sim_index(root_pose=articulation.data.default_root_pose.torch.clone())
         articulation.write_root_velocity_to_sim_index(root_velocity=articulation.data.default_root_vel.torch.clone())
         # reset dof state
         joint_pos, joint_vel = (
@@ -976,16 +974,17 @@ def test_external_force_on_single_body_at_position(sim, num_articulations, devic
         # reset articulation
         articulation.reset()
         # apply force
-        is_global = False
-
         if i % 2 == 0:
+            # Global-frame application: build a world-space position 1 m offset in y from COM.
             body_com_pos_w = articulation.data.body_com_pos_w.torch[:, body_ids, :3]
-            # is_global = True
+            is_global = True
             external_wrench_positions_b[..., 0] = 0.0
             external_wrench_positions_b[..., 1] = 1.0
             external_wrench_positions_b[..., 2] = 0.0
             external_wrench_positions_b += body_com_pos_w
         else:
+            # Body-local application: 1 m offset in y in the body frame.
+            is_global = False
             external_wrench_positions_b[..., 0] = 0.0
             external_wrench_positions_b[..., 1] = 1.0
             external_wrench_positions_b[..., 2] = 0.0
