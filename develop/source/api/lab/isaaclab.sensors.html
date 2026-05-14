@@ -1792,6 +1792,9 @@ Defaults to None, in which case the camera orientation in not changed.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the camera prim is not set. Need to call <code class="xref py py-meth docutils literal notranslate"><span class="pre">initialize()</span></code> method first.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If the stage up-axis is not “Y” or “Z”.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If every eye position equals its target (look-at direction undefined for the
+    whole batch). When only some rows are degenerate, those rows are skipped and the
+    remaining poses are still applied; a warning is logged.</p></li>
 </ul>
 </dd>
 </dl>
@@ -4060,6 +4063,9 @@ Defaults to None, in which case the camera orientation in not changed.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the camera prim is not set. Need to call <code class="xref py py-meth docutils literal notranslate"><span class="pre">initialize()</span></code> method first.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If the stage up-axis is not “Y” or “Z”.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If every eye position equals its target (look-at direction undefined for the
+    whole batch). When only some rows are degenerate, those rows are skipped and the
+    remaining poses are still applied; a warning is logged.</p></li>
 </ul>
 </dd>
 </dl>
@@ -5103,6 +5109,9 @@ Defaults to None, in which case the camera orientation in not changed.</p></li>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.14)"><strong>RuntimeError</strong></a> – If the camera prim is not set. Need to call <code class="xref py py-meth docutils literal notranslate"><span class="pre">initialize()</span></code> method first.</p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.14)"><strong>NotImplementedError</strong></a> – If the stage up-axis is not “Y” or “Z”.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.14)"><strong>ValueError</strong></a> – If every eye position equals its target (look-at direction undefined for the
+    whole batch). When only some rows are degenerate, those rows are skipped and the
+    remaining poses are still applied; a warning is logged.</p></li>
 </ul>
 </dd>
 </dl>

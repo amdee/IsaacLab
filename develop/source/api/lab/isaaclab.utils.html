@@ -3360,7 +3360,9 @@ then the input is in ‘wxyz’ format, and vice-versa.</p>
 <dd class="field-odd"><p><strong>matrix</strong> – The rotation matrices. Shape is (…, 3, 3).</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The quaternion in (x, y, z, w). Shape is (…, 4).</p>
+<dd class="field-even"><p>The quaternion in (x, y, z, w). Shape is (…, 4). Rows whose input is not a
+valid rotation (e.g. singular, reflection, or scale-error matrices) are filled
+with NaN, so callers can detect them via <a class="reference external" href="https://docs.pytorch.org/docs/2.11/generated/torch.isnan.html#torch.isnan" title="(in PyTorch v2.11)"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch.isnan()</span></code></a>.</p>
 </dd>
 </dl>
 <dl class="simple">
@@ -4182,12 +4184,20 @@ from world coordinates -&gt; view coordinates.</p>
 <p>The vectors are broadcast against each other so they all have shape (N, 3).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>(N, 3, 3) batched rotation matrices</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>R</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3,</span> <span class="pre">3)</span></code> batched rotation matrices. Rows with an undefined forward
+direction (<code class="docutils literal notranslate"><span class="pre">eyes</span> <span class="pre">==</span> <span class="pre">targets</span></code> or non-finite input) are filled with NaN.
+Callers detect per-row failure with <code class="docutils literal notranslate"><span class="pre">torch.isnan(R).any(dim=(-2,</span> <span class="pre">-1))</span></code>
+and total failure with <code class="docutils literal notranslate"><span class="pre">.all()</span></code>.</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the look-at direction is parallel to <code class="docutils literal notranslate"><span class="pre">up_axis</span></code> the camera roll
+is mathematically undefined; a deterministic frame is returned via an
+alternate reference vector. Tracking a target continuously through the
+singularity will produce a discontinuous rotation – smooth tracking
+requires interpolation at the caller (e.g., quaternion slerp).</p>
+</div>
 <p>Reference:
 Based on PyTorch3D (<a class="github reference external" href="https://github.com/facebookresearch/pytorch3d/blob/eaf0709d6af0025fe94d1ee7cec454bc3054826a/pytorch3d/renderer/cameras.py#L1635-L1685">facebookresearch/pytorch3d</a>)</p>
 </dd></dl>
